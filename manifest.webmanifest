@@ -9,7 +9,7 @@
   "theme_color": "#75c7df",
   "icons": [
     {
-      "src": "app%20icon.png",
+      "src": "lifeos_icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
