@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lifeOS Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandGreen: "#8ccf72",
+            brandGreenDeep: "#5fb24f",
+            brandSky: "#75c7df",
+            brandSkyDeep: "#35a9cd",
+            brandSoft: "#edf8f3",
+            ink: "#111827",
+            muted: "#7b8190"
+          },
+          boxShadow: {
+            soft: "0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 44px rgba(15, 23, 42, 0.06)"
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750&display=swap");
+
+    :root {
+      color-scheme: light;
+      --sidebar-width: 266px;
+      --border: rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: #111827;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", sans-serif;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    .app-bg {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%);
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(255, 255, 255, 0.92);
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      transition: width 220ms ease, transform 220ms ease;
+    }
+
+    body.sidebar-collapsed .sidebar {
+      width: 74px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-text,
+    body.sidebar-collapsed .sidebar-search,
+    body.sidebar-collapsed .nav-item {
+      font-size: 0 !important;
+    }
+
+    body.sidebar-collapsed .nav-item {
+      justify-content: center;
+      gap: 0;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+
+    body.sidebar-collapsed .profile-copy,
+    body.sidebar-collapsed .logout-button {
+      display: none;
+    }
+
+    body.sidebar-collapsed .profile-card {
+      justify-content: center;
+      padding: 8px;
+    }
+
+    .sidebar .brand-mark {
+      width: 64px !important;
+      height: 64px !important;
+      border-radius: 12px !important;
+      box-shadow: none;
+      mix-blend-mode: multiply;
+    }
+
+    .sidebar-brand-text {
+      font-size: 32px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.03em;
+    }
+
+    .sidebar-brand-text .brand-life { color: #78c86a; }
+    .sidebar-brand-text .brand-os { color: #63bde3; }
+
+    .sidebar .brand-mark::before,
+    .sidebar .brand-mark::after {
+      left: 7px;
+      width: 22px;
+      height: 36px;
+    }
+
+    .sidebar .brand-mark::before {
+      top: -8px;
+    }
+
+    .sidebar .brand-mark::after {
+      bottom: -9px;
+    }
+
+    .brand-mark {
+      position: relative;
+      overflow: hidden;
+      background: url("lifeos_icon.png") center / contain no-repeat;
+      box-shadow: none;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      display: none;
+    }
+
+    .nav-item {
+      min-height: 38px;
+      color: #20252d !important;
+      font-size: 16px !important;
+      font-weight: 400 !important;
+      letter-spacing: -0.014em;
+      border-radius: 8px !important;
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      color: #9aa3ad;
+      stroke-width: 1.9;
+      transition: color 160ms ease;
+    }
+
+    .nav-item:hover {
+      background: #f3faf8;
+      color: #0b6f78;
+    }
+
+    .nav-item.active {
+      color: #086b75 !important;
+      background: #e8f3f2;
+      box-shadow: none;
+      font-weight: 500 !important;
+    }
+
+    .nav-item.active svg,
+    .nav-item:hover svg {
+      color: #086b75;
+    }
+
+    .nav-item.active .active-dot {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .active-dot {
+      display: none;
+    }
+
+    .sidebar nav {
+      gap: 6px;
+    }
+
+    .sidebar-search {
+      height: 38px;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.72);
+      color: #a6adb6;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
+    }
+
+    .sidebar-search svg {
+      width: 16px;
+      height: 16px;
+      color: #9aa3ad;
+      stroke-width: 1.9;
+    }
+
+    .sidebar-search input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #1f2933;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: -0.012em;
+      outline: none;
+    }
+
+    .sidebar-search input::placeholder {
+      color: #a6adb6;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .card h2 {
+      color: #111827;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.028em;
+      line-height: 1.15;
+    }
+
+    .metric-number {
+      color: #0f172a;
+      font-size: 28px;
+      font-weight: 620;
+      letter-spacing: -0.038em;
+      line-height: 1;
+    }
+
+    .metric-copy {
+      color: #737b87;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.012em;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: #e4f4f1;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #8ccf72, #75c7df);
+    }
+    .dashboard-shell {
+      width: 100%;
+      padding: 16px;
+    }
+    .life-dashboard {
+      display: grid;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      gap: 16px;
+    }
+    .life-hero {
+      position: relative;
+      min-height: 212px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 82% 42%, rgba(117, 199, 223, 0.18), transparent 30%),
+        radial-gradient(circle at 76% 88%, rgba(140, 207, 114, 0.18), transparent 32%),
+        rgba(255,255,255,0.94);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 18px 44px rgba(15, 23, 42, 0.055);
+      padding: clamp(22px, 3vw, 34px);
+    }
+    .life-hero h1 {
+      margin: 4px 0 0;
+      color: #1f2937;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .life-hero p {
+      margin: 14px 0 0;
+      max-width: min(42vw, 330px);
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .hero-kicker {
+      color: #334155;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .hero-bell {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 999px;
+      color: #1f2937;
+      background: rgba(255,255,255,0.7);
+    }
+    .hero-character {
+      position: absolute;
+      right: clamp(48px, 8vw, 118px);
+      bottom: -18px;
+      width: clamp(190px, 24vw, 285px);
+      height: clamp(190px, 24vw, 285px);
+      object-fit: cover;
+      object-position: center;
+      border-radius: 999px;
+      clip-path: circle(49.5% at 50% 50%);
+      filter: drop-shadow(0 18px 24px rgba(15,23,42,0.12));
+    }
+    .hero-leaf {
+      position: absolute;
+      right: 182px;
+      bottom: 16px;
+      width: 70px;
+      height: 70px;
+      border-radius: 60% 10% 60% 10%;
+      background: linear-gradient(155deg, rgba(140,207,114,0.32), rgba(117,199,223,0.12));
+      transform: rotate(-20deg);
+    }
+    .life-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .life-stat {
+      position: relative;
+      min-height: 142px;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 20px;
+      color: #ffffff;
+      box-shadow: 0 15px 34px rgba(15, 23, 42, 0.08);
+    }
+    .life-stat.green {
+      background: linear-gradient(135deg, #7bc86c, #83d174);
+    }
+    .life-stat.blue {
+      background: linear-gradient(135deg, #64c2e4, #55b3dc);
+    }
+    .life-stat h2,
+    .progress-tile h2,
+    .up-next h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: -0.015em;
+    }
+    .life-stat-value {
+      margin-top: 20px;
+      font-size: 35px;
+      font-weight: 500;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+    .life-stat p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.92;
+    }
+    .life-stat-icon {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      border: 3px solid rgba(255,255,255,0.72);
+      border-radius: 15px;
+      color: #ffffff;
+    }
+    .life-stat-icon.round {
+      border-radius: 999px;
+      border-width: 0;
+    }
+    .life-stat-icon svg {
+      width: 34px;
+      height: 34px;
+      stroke-width: 2;
+    }
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .progress-tile,
+    .up-next {
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 18px 44px rgba(15, 23, 42, 0.055);
+      padding: 18px;
+    }
+    .habit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .habit-value,
+    .daily-value {
+      color: #1f2937;
+      font-size: 34px;
+      font-weight: 620;
+      letter-spacing: -0.05em;
+      line-height: 1;
+    }
+    .habit-value span {
+      color: #94a3b8;
+      font-size: 24px;
+      font-weight: 500;
+    }
+    .check-dot {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 999px;
+      background: #82c86d;
+      color: #ffffff;
+    }
+    .mini-label {
+      margin-top: 4px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .mini-progress {
+      height: 7px;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #edf5ef;
+    }
+    .mini-progress span {
+      display: block;
+      width: 80%;
+      height: 100%;
+      border-radius: inherit;
+      background: #82c86d;
+    }
+    .daily-tile {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+    }
+    .progress-ring {
+      width: 74px;
+      height: 74px;
+      border-radius: 999px;
+      background: conic-gradient(#82c86d 0 72%, #eef4ef 72% 100%);
+      display: grid;
+      place-items: center;
+    }
+    .progress-ring::after {
+      content: "";
+      width: 54px;
+      height: 54px;
+      border-radius: inherit;
+      background: #ffffff;
+    }
+    .up-next-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .up-next-item {
+      display: grid;
+      grid-template-columns: 20px 72px 1fr;
+      align-items: center;
+      gap: 10px;
+      color: #334155;
+      font-size: 13px;
+    }
+    .up-next-item svg {
+      width: 16px;
+      height: 16px;
+      color: #61bce0;
+    }
+    .up-next-time {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .mobile-overlay {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    @media (max-width: 767px) {
+      .sidebar {
+        width: min(86vw, 304px);
+        transform: translateX(-105%);
+      }
+
+      .mobile-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .mobile-open .mobile-overlay {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .dashboard-shell {
+        padding: 20px 14px;
+      }
+      .life-hero {
+        display: grid;
+        min-height: auto;
+        padding: 22px;
+        padding-bottom: 18px;
+      }
+      .life-hero h1 {
+        max-width: 210px;
+        font-size: 28px;
+      }
+      .life-hero p {
+        max-width: 190px;
+        font-size: 14px;
+      }
+      .hero-character {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        justify-self: end;
+        width: min(54vw, 218px);
+        height: min(54vw, 218px);
+        margin-top: -38px;
+        margin-right: -6px;
+      }
+      .hero-leaf {
+        right: 128px;
+        bottom: 28px;
+      }
+      .life-card-grid,
+      .progress-grid {
+        grid-template-columns: 1fr;
+      }
+      .life-stat {
+        min-height: 132px;
+      }
+      .daily-tile {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+      .up-next-item {
+        grid-template-columns: 20px 68px minmax(0, 1fr);
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .life-hero {
+        min-height: 230px;
+      }
+      .hero-character {
+        right: 34px;
+        width: 240px;
+        height: 240px;
+      }
+      .life-hero p {
+        max-width: 300px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .life-hero {
+        padding: 20px;
+      }
+      .life-hero h1 {
+        font-size: 26px;
+      }
+      .hero-character {
+        width: min(62vw, 220px);
+        height: min(62vw, 220px);
+        margin-top: -24px;
+      }
+      .hero-bell {
+        top: 16px;
+        right: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+        animation-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-bg min-h-screen md:flex">
+    <div class="mobile-overlay fixed inset-0 z-30 bg-slate-950/25 md:hidden" data-close-mobile></div>
+
+    <aside class="sidebar fixed inset-y-0 left-0 z-40 flex flex-col px-3 py-5 md:sticky md:top-0 md:h-screen">
+      <div class="mb-8 min-h-[78px] flex items-center justify-between px-1">
+        <a href="dashboard.html" class="flex items-center gap-2.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-brandSky/20">
+          <span class="brand-mark h-11 w-11 rounded-[16px]" aria-hidden="true"></span>
+          <span class="sidebar-brand-text text-[32px] font-[500] tracking-[-0.03em]"><span class="brand-life">Life</span><span class="brand-os">OS</span></span>
+        </a>
+        <button type="button" data-sidebar-collapse class="hidden h-9 w-9 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep md:grid" aria-label="Collapse sidebar">
+          <i data-lucide="chevron-left" class="h-5 w-5"></i>
+        </button>
+        <button type="button" class="grid h-10 w-10 place-items-center rounded-full text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep md:hidden" aria-label="Close menu" data-close-mobile>
+          <i data-lucide="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+
+      <div class="sidebar-search mb-4 flex items-center gap-2 px-2.5"><i data-lucide="search" class="shrink-0"></i><input data-sidebar-search type="search" placeholder="Quick search..." aria-label="Search subsystems" /></div>
+
+      <nav class="flex-1 space-y-1" aria-label="lifeOS navigation">
+        <a href="dashboard.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page">
+          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
+          <i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0"></i>
+          Dashboard
+        </a>
+        <a href="to-do-list.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
+          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
+          <i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i>
+          To-Do-List
+        </a>
+        <a href="special-task.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
+          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
+          <i data-lucide="sparkles" class="h-5 w-5 shrink-0"></i>
+          Special Task
+        </a>
+        <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
+          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
+          <i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i>
+          Expense
+        </a>
+        <a href="workout.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
+          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
+          <i data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i>
+          Workout
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-2 border-t border-slate-100 pt-4">
+        <button type="button" data-profile-button class="profile-card flex min-w-0 flex-1 items-start gap-2.5 rounded-2xl bg-white p-2.5 text-left shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-brandSky/20">
+          <span data-user-avatar class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brandGreen to-brandSky text-xs font-bold text-white">DW</span>
+          <span class="profile-copy min-w-0"><span data-user-display class="block whitespace-normal break-words text-[13px] font-[550] leading-[1.2] text-ink">Dwight</span><span class="block pt-0.5 text-[11px] font-[400] leading-none text-muted">Signed in</span></span>
+        </button>
+        <button type="button" data-logout-button class="logout-button grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep focus:outline-none focus:ring-4 focus:ring-brandSky/20" aria-label="Logout">
+          <i data-lucide="log-out" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="min-h-screen min-w-0 flex-1">
+      <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-100 bg-white/80 px-5 backdrop-blur-xl md:hidden">
+        <button id="openMobileMenu" type="button" class="grid h-11 w-11 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep" aria-label="Open menu">
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <span class="brand-mark h-9 w-9 rounded-[14px]" aria-hidden="true"></span>
+          <span class="text-lg font-semibold tracking-tight">lifeOS</span>
+        </div>
+        <span class="h-11 w-11"></span>
+      </header>
+
+      <section class="dashboard-shell">
+        <div class="life-dashboard">
+          <section class="life-hero">
+            <span class="hero-kicker">Good morning,</span>
+            <h1><span data-dashboard-name>Dwight</span>! <span aria-hidden="true">👋</span></h1>
+            <p>Focus on progress, not perfection.</p>
+            <span class="hero-leaf" aria-hidden="true"></span>
+            <img class="hero-character" src="lifi_welcome.png" alt="" />
+            <span class="hero-bell" aria-hidden="true"><i data-lucide="bell"></i></span>
+          </section>
+
+          <div class="life-card-grid">
+            <article class="life-stat green">
+              <h2>Tasks Today</h2>
+              <div class="life-stat-value" id="dashboardTaskCount">0</div>
+              <p>Total tasks</p>
+              <span class="life-stat-icon" aria-hidden="true"><i data-lucide="clipboard-check"></i></span>
+            </article>
+
+            <article class="life-stat blue">
+              <h2>Gym</h2>
+              <div class="life-stat-value text-[22px] font-[500] tracking-[-0.03em]">Upper Body</div>
+              <p>Workout</p>
+              <span class="life-stat-icon round" aria-hidden="true"><i data-lucide="dumbbell"></i></span>
+            </article>
+          </div>
+
+          <div class="progress-grid">
+            <article class="progress-tile">
+              <h2>Habit Progress</h2>
+              <div class="habit-row">
+                <div>
+                  <div class="habit-value"><span id="dashboardDoneCount">0</span><span> / </span><span id="dashboardTotalCount">0</span></div>
+                  <div class="mini-label">Completed</div>
+                </div>
+                <span class="check-dot" aria-hidden="true"><i data-lucide="check"></i></span>
+              </div>
+              <div class="mini-progress"><span id="dashboardHabitBar"></span></div>
+            </article>
+
+            <article class="progress-tile daily-tile">
+              <div>
+                <h2>Daily Progress</h2>
+                <div class="daily-value" id="dashboardDailyPercent">0%</div>
+                <div class="mini-label">Great job!</div>
+              </div>
+              <div class="progress-ring" id="dashboardRing" aria-hidden="true"></div>
+            </article>
+          </div>
+
+          <article class="up-next">
+            <h2>Up Next</h2>
+            <div class="up-next-list">
+              <div class="up-next-item">
+                <i data-lucide="calendar-days"></i>
+                <span class="up-next-time">10:00 AM</span>
+                <span>Study Session</span>
+              </div>
+              <div class="up-next-item">
+                <i data-lucide="dumbbell"></i>
+                <span class="up-next-time">01:00 PM</span>
+                <span>Chest Workout</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="download-app.js"></script>
+  <script>
+    const openMobileMenu = document.getElementById("openMobileMenu");
+    function readJson(key, fallback) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function updateDashboardStats() {
+      const todayKey = new Date().toLocaleDateString("en-CA");
+      const state = readJson("lifeOS_daily_todo_v1", {});
+      const accounts = readJson("lifeOS_accounts_v1", []);
+      const username = localStorage.getItem("lifeOS_current_user_v1");
+      const account = accounts.find((item) => item.username === username);
+      const routines = Array.isArray(state.routines) ? state.routines : [];
+      const completions = state.completions?.[todayKey] && typeof state.completions[todayKey] === "object" ? state.completions[todayKey] : {};
+      const specialTasks = Array.isArray(state.specialTasks?.[todayKey]) ? state.specialTasks[todayKey] : [];
+      const routineDone = routines.filter((routine) => completions[routine.id]).length;
+      const specialDone = specialTasks.filter((task) => task.completed).length;
+      const total = routines.length + specialTasks.length;
+      const done = routineDone + specialDone;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+
+      document.querySelector("[data-dashboard-name]").textContent = account?.username || "Dwight";
+      document.getElementById("dashboardTaskCount").textContent = total;
+      document.getElementById("dashboardDoneCount").textContent = done;
+      document.getElementById("dashboardTotalCount").textContent = total;
+      document.getElementById("dashboardDailyPercent").textContent = `${percent}%`;
+      document.getElementById("dashboardHabitBar").style.width = `${percent}%`;
+      document.getElementById("dashboardRing").style.background = `conic-gradient(#82c86d 0 ${percent}%, #eef4ef ${percent}% 100%)`;
+    }
+
+    openMobileMenu.addEventListener("click", () => {
+      document.body.classList.add("mobile-open");
+    });
+
+    document.querySelectorAll("[data-close-mobile]").forEach((button) => {
+      button.addEventListener("click", () => document.body.classList.remove("mobile-open"));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.body.classList.remove("mobile-open");
+      }
+    });
+
+    updateDashboardStats();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

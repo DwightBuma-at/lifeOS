@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lifeOS Workout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brandGreen: "#8ccf72", brandSky: "#75c7df", brandSkyDeep: "#35a9cd", brandSoft: "#edf8f3", ink: "#111827", muted: "#7b8190" } } } };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750&display=swap");
+
+    :root { color-scheme: light; --sidebar-width: 266px; --border: rgba(15, 23, 42, 0.08); }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { min-height: 100vh; margin: 0; color: #111827; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", sans-serif; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+    .app-bg { background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%); }
+    .sidebar { width: var(--sidebar-width); background: rgba(255, 255, 255, 0.92); border-right: 1px solid var(--border); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); transition: transform 220ms ease; }
+    body.sidebar-collapsed .sidebar { width: 74px; padding-left: 12px; padding-right: 12px; }
+    body.sidebar-collapsed .sidebar-brand-text, body.sidebar-collapsed .sidebar-search, body.sidebar-collapsed .nav-item { font-size: 0 !important; }
+    body.sidebar-collapsed .nav-item { justify-content: center; gap: 0; padding-left: 0.75rem; padding-right: 0.75rem; }
+    body.sidebar-collapsed .profile-copy, body.sidebar-collapsed .logout-button { display: none; }
+    body.sidebar-collapsed .profile-card { justify-content: center; padding: 8px; }
+    .sidebar .brand-mark { width: 64px !important; height: 64px !important; border-radius: 12px !important; box-shadow: none; mix-blend-mode: multiply; }
+    .sidebar-brand-text { font-size: 32px !important; font-weight: 500 !important; letter-spacing: -0.03em; }
+    .sidebar-brand-text .brand-life { color: #78c86a; }
+    .sidebar-brand-text .brand-os { color: #63bde3; }
+    .sidebar .brand-mark::before, .sidebar .brand-mark::after { left: 7px; width: 22px; height: 36px; }
+    .sidebar .brand-mark::before { top: -8px; }
+    .sidebar .brand-mark::after { bottom: -9px; }
+    .brand-mark { position: relative; overflow: hidden; background: url("lifeos_icon.png") center / contain no-repeat; box-shadow: none; }
+    .brand-mark::before, .brand-mark::after { display: none; }
+    .nav-item { min-height: 38px; color: #20252d !important; font-size: 16px !important; font-weight: 400 !important; letter-spacing: -0.014em; border-radius: 8px !important; transition: background 160ms ease, color 160ms ease; }
+    .nav-item svg { width: 18px; height: 18px; color: #9aa3ad; stroke-width: 1.9; transition: color 160ms ease; }
+    .nav-item:hover { background: #f3faf8; color: #0b6f78; }
+    .nav-item.active { color: #086b75 !important; background: #e8f3f2; box-shadow: none; font-weight: 500 !important; }
+    .nav-item.active svg, .nav-item:hover svg { color: #086b75; }
+    .active-dot { display: none; }
+    .sidebar nav { gap: 6px; }
+    .sidebar-search { height: 38px; border: 1px solid rgba(15, 23, 42, 0.06); border-radius: 9px; background: rgba(255, 255, 255, 0.72); color: #a6adb6; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025); }
+    .sidebar-search svg { width: 16px; height: 16px; color: #9aa3ad; stroke-width: 1.9; }
+    .sidebar-search input { min-width: 0; width: 100%; border: 0; background: transparent; color: #1f2933; font: inherit; font-size: 15px; font-weight: 400; letter-spacing: -0.012em; outline: none; }
+    .sidebar-search input::placeholder { color: #a6adb6; }
+.nav-item.active .active-dot { opacity: 1; transform: scaleY(1); }
+    .mobile-overlay { opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+    @media (max-width: 767px) { .sidebar { width: min(86vw, 304px); transform: translateX(-105%); } .mobile-open .sidebar { transform: translateX(0); } .mobile-open .mobile-overlay { opacity: 1; pointer-events: auto; } }
+  </style>
+</head>
+<body>
+  <div class="app-bg min-h-screen md:flex">
+    <div class="mobile-overlay fixed inset-0 z-30 bg-slate-950/25 md:hidden" data-close-mobile></div>
+    <aside class="sidebar fixed inset-y-0 left-0 z-40 flex flex-col px-3 py-5 md:sticky md:top-0 md:h-screen">
+      <div class="mb-8 min-h-[78px] flex items-center justify-between px-1">
+        <a href="dashboard.html" class="flex items-center gap-2.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span class="brand-mark h-11 w-11 rounded-[16px]" aria-hidden="true"></span><span class="sidebar-brand-text text-[32px] font-[500] tracking-[-0.03em]"><span class="brand-life">Life</span><span class="brand-os">OS</span></span></a>
+        <button type="button" data-sidebar-collapse class="hidden h-9 w-9 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep md:grid" aria-label="Collapse sidebar"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
+        <button type="button" class="grid h-10 w-10 place-items-center rounded-full text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep md:hidden" aria-label="Close menu" data-close-mobile><i data-lucide="x" class="h-5 w-5"></i></button>
+      </div>
+      <div class="sidebar-search mb-4 flex items-center gap-2 px-2.5"><i data-lucide="search" class="shrink-0"></i><input data-sidebar-search type="search" placeholder="Quick search..." aria-label="Search subsystems" /></div>
+      <nav class="flex-1 space-y-1" aria-label="lifeOS navigation">
+        <a href="dashboard.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0"></i> Dashboard</a>
+        <a href="to-do-list.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> To-Do-List</a>
+        <a href="special-task.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="sparkles" class="h-5 w-5 shrink-0"></i> Special Task</a>
+        <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense</a>
+        <a href="workout.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i> Workout</a>
+      </nav>
+      <div class="flex items-center gap-2 border-t border-slate-100 pt-4">
+        <button type="button" data-profile-button class="profile-card flex min-w-0 flex-1 items-start gap-2.5 rounded-2xl bg-white p-2.5 text-left shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span data-user-avatar class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brandGreen to-brandSky text-xs font-bold text-white">DW</span><span class="profile-copy min-w-0"><span data-user-display class="block whitespace-normal break-words text-[13px] font-[550] leading-[1.2] text-ink">Dwight</span><span class="block pt-0.5 text-[11px] font-[400] leading-none text-muted">Signed in</span></span></button>
+        <button type="button" data-logout-button class="logout-button grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep focus:outline-none focus:ring-4 focus:ring-brandSky/20" aria-label="Logout"><i data-lucide="log-out" class="h-5 w-5"></i></button>
+      </div>
+    </aside>
+    <main class="min-h-screen flex-1">
+      <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-100 bg-white/80 px-5 backdrop-blur-xl md:hidden">
+        <button id="openMobileMenu" type="button" class="grid h-11 w-11 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep" aria-label="Open menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
+        <div class="flex items-center gap-2"><span class="brand-mark h-9 w-9 rounded-[14px]" aria-hidden="true"></span><span class="text-lg font-semibold tracking-tight">lifeOS</span></div>
+        <span class="h-11 w-11"></span>
+      </header>
+    </main>
+  </div>
+  <script src="auth.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="download-app.js"></script>
+  <script>
+    document.getElementById("openMobileMenu").addEventListener("click", () => document.body.classList.add("mobile-open"));
+    document.querySelectorAll("[data-close-mobile]").forEach((button) => button.addEventListener("click", () => document.body.classList.remove("mobile-open")));
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") document.body.classList.remove("mobile-open"); });
+    lucide.createIcons();
+  </script>
+</body>
+</html>
