@@ -2,7 +2,15 @@
   const ACCOUNTS_KEY = "lifeOS_accounts_v1";
   const SESSION_KEY = "lifeOS_current_user_v1";
   const REMEMBER_KEY = "lifeOS_remembered_accounts_v1";
+  const LAST_PAGE_KEY = "lifeOS_last_page_v1";
   const PASSWORD_MASK = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022";
+  const APP_PAGES = new Set([
+    "dashboard.html",
+    "to-do-list.html",
+    "special-task.html",
+    "expense.html",
+    "workout.html"
+  ]);
 
   const modalMarkup = `
     <div id="authOverlay" class="auth-overlay" aria-hidden="true">
@@ -1089,6 +1097,22 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
+  function currentPageName() {
+    return window.location.pathname.split("/").pop() || "index.html";
+  }
+
+  function rememberCurrentPage() {
+    const page = currentPageName();
+    if (APP_PAGES.has(page)) {
+      localStorage.setItem(LAST_PAGE_KEY, page);
+    }
+  }
+
+  function getLastAppPage() {
+    const saved = localStorage.getItem(LAST_PAGE_KEY);
+    return APP_PAGES.has(saved) ? saved : "dashboard.html";
+  }
+
   function getAccounts() {
     return readJson(ACCOUNTS_KEY, []);
   }
@@ -1258,7 +1282,7 @@
       loading.classList.remove("open");
       loading.setAttribute("aria-hidden", "true");
       if (isLandingPage) {
-        window.location.href = "dashboard.html";
+        window.location.href = getLastAppPage();
         return;
       }
       showStatusModal("success", title, message);
@@ -1587,6 +1611,11 @@
     if (account) {
       updateUserDisplay(account);
       hideAuth();
+      if (isLandingPage) {
+        window.location.href = getLastAppPage();
+        return;
+      }
+      rememberCurrentPage();
     } else if (isLandingPage) {
       updateUserDisplay(null);
       hideAuth();
