@@ -9,6 +9,7 @@
     "to-do-list.html",
     "special-task.html",
     "expense.html",
+    "sibs.html",
     "workout.html"
   ]);
 
@@ -1128,6 +1129,16 @@
     return getAccounts().find((account) => account.username === username) || null;
   }
 
+  function registerLifeOSServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").then((registration) => {
+        registration.update();
+      }).catch(() => {});
+    });
+  }
+
   function initials(name) {
     return (name || "User").split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
   }
@@ -1348,6 +1359,8 @@
   }
 
   function setupAuth() {
+    registerLifeOSServiceWorker();
+
     const style = document.createElement("style");
     style.textContent = styles;
     document.head.appendChild(style);
