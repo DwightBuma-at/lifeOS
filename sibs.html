@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#75c7df">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LifeOS">
+<link rel="manifest" href="lifeos.webmanifest">
+<link rel="apple-touch-icon" href="lifeos_icon.png">
+<link rel="icon" type="image/png" href="lifeos_icon.png">
+<title>lifeOS SIBS Budget</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = { theme: { extend: { colors: { brandGreen: "#8ccf72", brandSky: "#75c7df", brandSkyDeep: "#35a9cd", brandSoft: "#edf8f3", ink: "#111827", muted: "#7b8190" } } } };
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750&display=swap");
+
+    :root {
+        color-scheme: light;
+        --sidebar-width: 266px;
+        --border: rgba(15, 23, 42, 0.08);
+        --bg: #fbfdfc;
+        --panel: #ffffff;
+        --text: #111827;
+        --muted: #7b8190;
+        --line: rgba(15, 23, 42, 0.08);
+        --field: #ffffff;
+        --accent: #35a9cd;
+        --accent-green: #7bc86c;
+        --good: #5fb24f;
+        --bad: #b42318;
+        --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 44px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        color: #111827;
+        background: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", sans-serif;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+    }
+
+    .app-bg {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%);
+    }
+
+    .sidebar {
+        width: var(--sidebar-width);
+        background: rgba(255, 255, 255, 0.92);
+        border-right: 1px solid var(--border);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        transition: transform 220ms ease;
+    }
+
+    body.sidebar-collapsed .sidebar {
+        width: 74px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-text,
+    body.sidebar-collapsed .sidebar-search,
+    body.sidebar-collapsed .nav-item {
+        font-size: 0 !important;
+    }
+
+    body.sidebar-collapsed .nav-item {
+        justify-content: center;
+        gap: 0;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    body.sidebar-collapsed .profile-copy,
+    body.sidebar-collapsed .logout-button {
+        display: none;
+    }
+
+    body.sidebar-collapsed .profile-card {
+        justify-content: center;
+        padding: 8px;
+    }
+
+    .sidebar .brand-mark {
+        width: 64px !important;
+        height: 64px !important;
+        border-radius: 12px !important;
+        box-shadow: none;
+        mix-blend-mode: multiply;
+    }
+
+    .sidebar-brand-text {
+        font-size: 32px !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.03em;
+    }
+
+    .sidebar-brand-text .brand-life { color: #78c86a; }
+    .sidebar-brand-text .brand-os { color: #63bde3; }
+
+    .brand-mark {
+        position: relative;
+        overflow: hidden;
+        background: url("lifeos_icon.png") center / contain no-repeat;
+        box-shadow: none;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+        display: none;
+    }
+
+    .nav-item {
+        min-height: 38px;
+        color: #20252d !important;
+        font-size: 16px !important;
+        font-weight: 400 !important;
+        letter-spacing: -0.014em;
+        line-height: 1.2;
+        border-radius: 8px !important;
+        transition: background 160ms ease, color 160ms ease;
+    }
+
+    .nav-item svg {
+        width: 18px;
+        height: 18px;
+        color: #9aa3ad;
+        stroke-width: 1.9;
+        transition: color 160ms ease;
+    }
+
+    .nav-item:hover {
+        background: #f3faf8;
+        color: #0b6f78;
+    }
+
+    .nav-item.active {
+        color: #086b75 !important;
+        background: #e8f3f2;
+        box-shadow: none;
+        font-weight: 500 !important;
+    }
+
+    .nav-item.active svg,
+    .nav-item:hover svg {
+        color: #086b75;
+    }
+
+    .active-dot {
+        display: none;
+    }
+
+    .nav-item.active .active-dot {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+
+    .sidebar nav {
+        gap: 6px;
+    }
+
+    .sidebar-search {
+        height: 38px;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.72);
+        color: #a6adb6;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
+    }
+
+    .sidebar-search svg {
+        width: 16px;
+        height: 16px;
+        color: #9aa3ad;
+        stroke-width: 1.9;
+    }
+
+    .sidebar-search input {
+        min-width: 0;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #1f2933;
+        font: inherit;
+        font-size: 15px;
+        font-weight: 400;
+        letter-spacing: -0.012em;
+        outline: none;
+    }
+
+    .sidebar-search input::placeholder {
+        color: #a6adb6;
+    }
+
+    .mobile-overlay {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 200ms ease;
+    }
+
+    .sibs-page {
+        min-height: calc(100vh - 64px);
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 28px 20px;
+    }
+
+    .container {
+        width: min(100%, 1120px);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: center;
+        padding: 22px 24px 18px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .header-text {
+        min-width: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.2;
+        letter-spacing: 0;
+    }
+
+    .subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .form {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        padding: 20px 24px 24px;
+    }
+
+    .field {
+        display: grid;
+        gap: 7px;
+    }
+
+    .field-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 22px;
+    }
+
+    .remove-field {
+        display: inline-grid;
+        width: 22px;
+        height: 22px;
+        min-height: 22px !important;
+        place-items: center;
+        border-radius: 999px !important;
+        padding: 0 !important;
+        background: #f2f6f5;
+        color: #7b8190;
+        font-size: 12px !important;
+        font-weight: 800;
+        line-height: 1;
+        box-shadow: none !important;
+    }
+
+    .remove-field:hover {
+        background: #fee4e2;
+        color: var(--bad);
+    }
+
+    .field.related-fare input {
+        background: #effaff;
+    }
+
+    .field.related-bus input {
+        background: #fffbed;
+    }
+
+    .field.related-food input {
+        background: #f3fbf0;
+    }
+
+    .line-start {
+        grid-column-start: 1;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0 24px 18px;
+    }
+
+    label {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .money-input {
+        position: relative;
+    }
+
+    .money-input span {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+        font-weight: 700;
+        pointer-events: none;
+    }
+
+    .container input,
+    .modal-box > .field input {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--field);
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 500;
+        padding: 10px 12px 10px 36px;
+        outline: none;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .container input[readonly] {
+        background: #f7faf9;
+        color: var(--muted);
+        cursor: default;
+    }
+
+    .container input:focus,
+    .modal-box > .field input:focus {
+        border-color: var(--accent);
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(117, 199, 223, 0.18);
+    }
+
+    .container .field.related-fare input {
+        background: #effaff;
+    }
+
+    .container .field.related-bus input {
+        background: #fffbed;
+    }
+
+    .container .field.related-food input {
+        background: #f3fbf0;
+    }
+
+    .container button,
+    .modal button {
+        min-height: 42px;
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 800;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .container button:active,
+    .modal button:active {
+        transform: translateY(1px);
+    }
+
+    .primary-button {
+        background: var(--accent-green);
+        color: #ffffff;
+        box-shadow: 0 10px 20px rgba(123, 200, 108, 0.22);
+    }
+
+    .secondary-button {
+        background: #eaf7f3;
+        color: var(--text);
+    }
+
+    .danger-button {
+        background: #fee4e2;
+        color: var(--bad);
+    }
+
+    .summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 0 24px 24px;
+    }
+
+    .result {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        min-height: 54px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 14px;
+        background: #fbfdfc;
+    }
+
+    .result-label {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .result-value {
+        font-size: 20px;
+        font-weight: 800;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .left .result-value {
+        color: var(--good);
+    }
+
+    .left.negative .result-value {
+        color: var(--bad);
+    }
+
+    .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        background: rgba(15, 23, 42, 0.38);
+        z-index: 10;
+    }
+
+    .modal.open {
+        display: flex;
+    }
+
+    .modal-box {
+        width: min(100%, 380px);
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+    }
+
+    .modal-box.wide {
+        width: min(100%, 720px);
+    }
+
+    .modal-box h2 {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    .modal-box p {
+        margin: 6px 0 16px;
+        color: var(--muted);
+        font-size: 14px;
+    }
+
+    .modal-box > .field input {
+        padding-left: 12px;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .logs-list {
+        display: grid;
+        gap: 12px;
+        max-height: 58vh;
+        overflow: auto;
+        padding-right: 4px;
+    }
+
+    .empty-log {
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+        padding: 18px;
+        text-align: center;
+    }
+
+    .log-item {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #ffffff;
+    }
+
+    .log-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .log-date {
+        margin: 0 0 4px;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .log-total {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .log-fields {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px 14px;
+        margin: 0;
+    }
+
+    .log-fields div {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
+        min-width: 0;
+    }
+
+    .log-fields dt,
+    .log-fields dd {
+        margin: 0;
+    }
+
+    .log-fields dt {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .log-fields dd {
+        color: var(--text);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+        .form {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 760px) {
+        .sidebar {
+            width: min(86vw, 304px);
+            transform: translateX(-105%);
+        }
+
+        .mobile-open .sidebar {
+            transform: translateX(0);
+        }
+
+        .mobile-open .mobile-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .sibs-page {
+            padding: 14px;
+        }
+
+        .container {
+            border-radius: 8px;
+        }
+
+        .header {
+            align-items: stretch;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .header-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            width: 100%;
+        }
+
+        .header-actions button {
+            min-width: 0;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .form,
+        .summary {
+            grid-template-columns: 1fr;
+        }
+
+        .form {
+            gap: 12px;
+            padding-top: 16px;
+        }
+
+        .line-start {
+            grid-column-start: auto;
+        }
+
+        .result {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .result-value {
+            text-align: left;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .sibs-page {
+            padding: 14px;
+        }
+
+        .header,
+        .form,
+        .summary {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .header-actions {
+            grid-template-columns: 1fr;
+        }
+
+        h1 {
+            font-size: 22px;
+        }
+
+        .result-value {
+            font-size: 18px;
+        }
+
+        .log-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .modal {
+            align-items: flex-end;
+            padding: 10px;
+        }
+
+        .modal-box,
+        .modal-box.wide {
+            max-height: 88vh;
+            overflow: auto;
+            padding: 16px;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .logs-list {
+            max-height: 56vh;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="app-bg min-h-screen md:flex">
+    <div class="mobile-overlay fixed inset-0 z-30 bg-slate-950/25 md:hidden" data-close-mobile></div>
+    <aside class="sidebar fixed inset-y-0 left-0 z-40 flex flex-col px-3 py-5 md:sticky md:top-0 md:h-screen">
+        <div class="mb-8 min-h-[78px] flex items-center justify-between px-1">
+            <a href="dashboard.html" class="flex items-center gap-2.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span class="brand-mark h-11 w-11 rounded-[16px]" aria-hidden="true"></span><span class="sidebar-brand-text text-[32px] font-[500] tracking-[-0.03em]"><span class="brand-life">Life</span><span class="brand-os">OS</span></span></a>
+            <button type="button" data-sidebar-collapse class="hidden h-9 w-9 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep md:grid" aria-label="Collapse sidebar"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
+            <button type="button" class="grid h-10 w-10 place-items-center rounded-full text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep md:hidden" aria-label="Close menu" data-close-mobile><i data-lucide="x" class="h-5 w-5"></i></button>
+        </div>
+        <div class="sidebar-search mb-4 flex items-center gap-2 px-2.5"><i data-lucide="search" class="shrink-0"></i><input data-sidebar-search type="search" placeholder="Quick search..." aria-label="Search subsystems"></div>
+        <nav class="flex-1 space-y-1" aria-label="lifeOS navigation">
+            <a href="dashboard.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0"></i> Dashboard</a>
+            <a href="to-do-list.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> To-Do-List</a>
+            <a href="special-task.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="sparkles" class="h-5 w-5 shrink-0"></i> Special Task</a>
+            <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense (in-progress)</a>
+            <a href="sibs.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="calculator" class="h-5 w-5 shrink-0"></i> SIBS Budget</a>
+            <a href="workout.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i> Workout (in-progress)</a>
+        </nav>
+        <div class="flex items-center gap-2 border-t border-slate-100 pt-4">
+            <button type="button" data-profile-button class="profile-card flex min-w-0 flex-1 items-start gap-2.5 rounded-2xl bg-white p-2.5 text-left shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span data-user-avatar class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brandGreen to-brandSky text-xs font-bold text-white">DW</span><span class="profile-copy min-w-0"><span data-user-display class="block whitespace-normal break-words text-[13px] font-[550] leading-[1.2] text-ink">Dwight</span><span class="block pt-0.5 text-[11px] font-[400] leading-none text-muted">Signed in</span></span></button>
+            <button type="button" data-logout-button class="logout-button grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep focus:outline-none focus:ring-4 focus:ring-brandSky/20" aria-label="Logout"><i data-lucide="log-out" class="h-5 w-5"></i></button>
+        </div>
+    </aside>
+    <main class="min-h-screen flex-1">
+        <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-100 bg-white/80 px-5 backdrop-blur-xl md:hidden">
+            <button id="openMobileMenu" type="button" class="grid h-11 w-11 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep" aria-label="Open menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
+            <div class="flex items-center gap-2"><span class="brand-mark h-9 w-9 rounded-[14px]" aria-hidden="true"></span><span class="text-lg font-semibold tracking-tight">lifeOS</span></div>
+            <span class="h-11 w-11"></span>
+        </header>
+        <section class="sibs-page">
+<section class="container" aria-label="Monthly budget calculator">
+    <section class="header">
+        <div class="header-text">
+            <h1>SIBS Budget</h1>
+            <p class="subtitle">Monthly income, fixed costs, commute, food, and saved budget logs.</p>
+        </div>
+        <div class="header-actions">
+            <button type="button" class="secondary-button" id="openLogs">Logs</button>
+            <button type="button" class="secondary-button" id="saveData">Save Data</button>
+            <button type="button" class="primary-button" id="openAddField">Add Field</button>
+        </div>
+    </section>
+
+    <section class="form" id="budgetFields">
+        <div class="field">
+            <label for="income">Income / Month</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="income" class="amount" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="dorm">Dorm Rent</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="dorm" class="amount expense" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="electricity">Electricity</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="electricity" class="amount expense" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="water">Water</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="water" class="amount expense" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="ai">AI Subscription</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="ai" class="amount expense" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="gym">Gym</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="gym" class="amount expense" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field related related-food line-start">
+            <label for="food">Food per Day</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="food" class="amount" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field related related-food">
+            <label for="foodWeek">Food 5x per Week</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="foodWeek" readonly value="0" tabindex="-1">
+            </div>
+        </div>
+
+        <div class="field related related-food">
+            <label for="foodMonth">Food Monthly (x4 Weeks)</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="foodMonth" class="expense" readonly value="0" tabindex="-1">
+            </div>
+        </div>
+
+        <div class="field related related-fare line-start">
+            <label for="fare">Everyday Fare (Back &amp; Forth)</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="fare" class="amount" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field related related-fare">
+            <label for="fareMonth">Fare Monthly (x4 Weeks)</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="fareMonth" class="expense" readonly value="0" tabindex="-1">
+            </div>
+        </div>
+
+        <div class="field related related-bus">
+            <label for="bus">Bus Davao to Tagum</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="bus" class="amount" inputmode="numeric" autocomplete="off" value="0">
+            </div>
+        </div>
+
+        <div class="field related related-bus">
+            <label for="busMonth">Bus Monthly (x4 Weeks)</label>
+            <div class="money-input">
+                <span>&#8369;</span>
+                <input type="text" id="busMonth" class="expense" readonly value="0" tabindex="-1">
+            </div>
+        </div>
+    </section>
+
+    <section class="summary" aria-live="polite">
+        <div class="result">
+            <span class="result-label">Total Expenses</span>
+            <span class="result-value">&#8369;<span id="expenses">0</span></span>
+        </div>
+
+        <div class="result left" id="leftResult">
+            <span class="result-label">Total Money Left</span>
+            <span class="result-value">&#8369;<span id="left">0</span></span>
+        </div>
+    </section>
+</section>
+        </section>
+    </main>
+</div>
+
+<div class="modal" id="addFieldModal" role="dialog" aria-modal="true" aria-labelledby="addFieldTitle">
+    <div class="modal-box">
+        <h2 id="addFieldTitle">Add Field</h2>
+        <p>Type the name of the expense you want to add.</p>
+
+        <div class="field">
+            <label for="newFieldName">Field Name</label>
+            <input type="text" id="newFieldName" autocomplete="off" placeholder="Example: Laundry">
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" class="secondary-button" id="cancelAddField">Cancel</button>
+            <button type="button" class="primary-button" id="confirmAddField">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="logsModal" role="dialog" aria-modal="true" aria-labelledby="logsTitle">
+    <div class="modal-box wide">
+        <h2 id="logsTitle">Logs</h2>
+        <p>Saved budget data from this browser.</p>
+
+        <div class="logs-list" id="logsList"></div>
+
+        <div class="modal-actions">
+            <button type="button" class="secondary-button" id="closeLogs">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="removeFieldModal" role="dialog" aria-modal="true" aria-labelledby="removeFieldTitle">
+    <div class="modal-box">
+        <h2 id="removeFieldTitle">Remove Field</h2>
+        <p id="removeFieldMessage">Are you sure you want to remove this field?</p>
+
+        <div class="modal-actions">
+            <button type="button" class="secondary-button" id="cancelRemoveField">Cancel</button>
+            <button type="button" class="danger-button" id="confirmRemoveField">Remove</button>
+        </div>
+    </div>
+</div>
+
+<script src="auth.js"></script>
+<script src="sidebar.js"></script>
+<script src="download-app.js"></script>
+<script>
+const STORAGE_KEY = "sibsBudgetLogs";
+const openMobileMenu = document.getElementById("openMobileMenu");
+const income = document.getElementById("income");
+const budgetFields = document.getElementById("budgetFields");
+const expensesOutput = document.getElementById("expenses");
+const leftOutput = document.getElementById("left");
+const leftResult = document.getElementById("leftResult");
+const food = document.getElementById("food");
+const foodWeek = document.getElementById("foodWeek");
+const foodMonth = document.getElementById("foodMonth");
+const fare = document.getElementById("fare");
+const fareMonth = document.getElementById("fareMonth");
+const bus = document.getElementById("bus");
+const busMonth = document.getElementById("busMonth");
+const addFieldModal = document.getElementById("addFieldModal");
+const openAddField = document.getElementById("openAddField");
+const saveData = document.getElementById("saveData");
+const openLogs = document.getElementById("openLogs");
+const cancelAddField = document.getElementById("cancelAddField");
+const confirmAddField = document.getElementById("confirmAddField");
+const newFieldName = document.getElementById("newFieldName");
+const logsModal = document.getElementById("logsModal");
+const logsList = document.getElementById("logsList");
+const closeLogs = document.getElementById("closeLogs");
+const removeFieldModal = document.getElementById("removeFieldModal");
+const removeFieldMessage = document.getElementById("removeFieldMessage");
+const cancelRemoveField = document.getElementById("cancelRemoveField");
+const confirmRemoveField = document.getElementById("confirmRemoveField");
+let customFieldCount = 0;
+let pendingRemoveField = null;
+
+function toNumber(value) {
+    return Number(String(value).replace(/[^\d]/g, "")) || 0;
+}
+
+function formatAmount(value) {
+    return toNumber(value).toLocaleString("en-US");
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function valueFromInput(input) {
+    return input && input.isConnected ? toNumber(input.value) : 0;
+}
+
+function setInputValue(input, value) {
+    if (input && input.isConnected) {
+        input.value = value.toLocaleString("en-US");
+    }
+}
+
+function calculate() {
+    const weeklyFood = valueFromInput(food) * 5;
+    const monthlyFood = weeklyFood * 4;
+    const monthlyFare = valueFromInput(fare) * 4;
+    const monthlyBus = valueFromInput(bus) * 4;
+
+    setInputValue(foodWeek, weeklyFood);
+    setInputValue(foodMonth, monthlyFood);
+    setInputValue(fareMonth, monthlyFare);
+    setInputValue(busMonth, monthlyBus);
+
+    let totalExpenses = 0;
+
+    const expenseInputs = document.querySelectorAll(".expense");
+
+    expenseInputs.forEach(input => {
+        totalExpenses += toNumber(input.value);
+    });
+
+    const monthlyIncome = toNumber(income.value);
+    const moneyLeft = monthlyIncome - totalExpenses;
+
+    expensesOutput.textContent = totalExpenses.toLocaleString("en-US");
+    leftOutput.textContent = moneyLeft.toLocaleString("en-US");
+    leftResult.classList.toggle("negative", moneyLeft < 0);
+}
+
+function setupAmountInput(input) {
+    input.addEventListener("input", () => {
+        input.value = formatAmount(input.value);
+        calculate();
+    });
+
+    input.addEventListener("focus", () => {
+        if (input.value === "0") {
+            input.select();
+        }
+    });
+
+    input.addEventListener("blur", () => {
+        input.value = formatAmount(input.value);
+        calculate();
+    });
+}
+
+function openModal() {
+    addFieldModal.classList.add("open");
+    newFieldName.value = "";
+    newFieldName.focus();
+}
+
+function closeModal() {
+    addFieldModal.classList.remove("open");
+}
+
+function openLogsModal() {
+    renderLogs();
+    logsModal.classList.add("open");
+}
+
+function closeLogsModal() {
+    logsModal.classList.remove("open");
+}
+
+function openRemoveFieldModal(field) {
+    const label = field.querySelector("label");
+    const fieldName = label ? label.textContent.trim() : "this field";
+
+    pendingRemoveField = field;
+    removeFieldMessage.textContent = `Are you sure you want to remove "${fieldName}"?`;
+    removeFieldModal.classList.add("open");
+}
+
+function closeRemoveFieldModal() {
+    removeFieldModal.classList.remove("open");
+    pendingRemoveField = null;
+}
+
+function removePendingField() {
+    if (pendingRemoveField) {
+        pendingRemoveField.remove();
+        calculate();
+    }
+
+    closeRemoveFieldModal();
+}
+
+function getLogs() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    } catch {
+        return [];
+    }
+}
+
+function setLogs(logs) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+}
+
+function collectBudgetFields() {
+    return Array.from(budgetFields.querySelectorAll(".field")).map(field => {
+        const label = field.querySelector("label");
+        const input = field.querySelector("input");
+        const amount = input ? toNumber(input.value) : 0;
+
+        return {
+            name: label ? label.textContent.trim() : "Field",
+            value: amount.toLocaleString("en-US")
+        };
+    }).filter(field => toNumber(field.value) > 0);
+}
+
+function saveBudgetData() {
+    calculate();
+
+    const fields = collectBudgetFields();
+
+    if (!fields.length) {
+        const originalText = saveData.textContent;
+        saveData.textContent = "No Data";
+        setTimeout(() => {
+            saveData.textContent = originalText;
+        }, 1200);
+        return;
+    }
+
+    const logs = getLogs();
+    const entry = {
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        totalExpenses: expensesOutput.textContent,
+        moneyLeft: leftOutput.textContent,
+        fields
+    };
+
+    logs.unshift(entry);
+    setLogs(logs);
+
+    const originalText = saveData.textContent;
+    saveData.textContent = "Saved";
+    setTimeout(() => {
+        saveData.textContent = originalText;
+    }, 1200);
+}
+
+function renderLogs() {
+    const logs = getLogs();
+
+    if (!logs.length) {
+        logsList.innerHTML = `<div class="empty-log">No saved data yet.</div>`;
+        return;
+    }
+
+    logsList.innerHTML = logs.map(log => {
+        const fields = log.fields.map(field => `
+            <div>
+                <dt>${escapeHtml(field.name)}</dt>
+                <dd>&#8369;${escapeHtml(field.value)}</dd>
+            </div>
+        `).join("");
+
+        return `
+            <article class="log-item">
+                <div class="log-top">
+                    <div>
+                        <p class="log-date">${escapeHtml(new Date(log.createdAt).toLocaleString())}</p>
+                        <p class="log-total">Expenses: &#8369;${escapeHtml(log.totalExpenses)} | Left: &#8369;${escapeHtml(log.moneyLeft)}</p>
+                    </div>
+                    <button type="button" class="danger-button" data-delete-log="${escapeHtml(log.id)}">Delete</button>
+                </div>
+                <dl class="log-fields">${fields}</dl>
+            </article>
+        `;
+    }).join("");
+}
+
+function deleteLog(id) {
+    const logs = getLogs().filter(log => log.id !== id);
+    setLogs(logs);
+    renderLogs();
+}
+
+function addCustomField() {
+    const fieldName = newFieldName.value.trim();
+
+    if (!fieldName) {
+        newFieldName.focus();
+        return;
+    }
+
+    customFieldCount += 1;
+    const fieldId = `customField${customFieldCount}`;
+    const field = document.createElement("div");
+
+    field.className = "field";
+    field.innerHTML = `
+        <label for="${fieldId}"></label>
+        <div class="money-input">
+            <span>&#8369;</span>
+            <input type="text" id="${fieldId}" class="amount expense" inputmode="numeric" autocomplete="off" value="0">
+        </div>
+    `;
+
+    field.querySelector("label").textContent = fieldName;
+    budgetFields.appendChild(field);
+    setupRemovableField(field);
+
+    const input = field.querySelector("input");
+    setupAmountInput(input);
+    closeModal();
+    input.focus();
+    input.select();
+    calculate();
+}
+
+function setupRemovableField(field) {
+    if (field.dataset.removeReady === "true") {
+        return;
+    }
+
+    const label = field.querySelector("label");
+    const input = field.querySelector("input");
+
+    if (!label || !input || input.id === "income") {
+        return;
+    }
+
+    const heading = document.createElement("div");
+    const removeButton = document.createElement("button");
+
+    heading.className = "field-heading";
+    removeButton.type = "button";
+    removeButton.className = "remove-field";
+    removeButton.textContent = "X";
+    removeButton.setAttribute("aria-label", `Remove ${label.textContent.trim()}`);
+
+    label.before(heading);
+    heading.append(label, removeButton);
+
+    removeButton.addEventListener("click", () => openRemoveFieldModal(field));
+    field.dataset.removeReady = "true";
+}
+
+document.querySelectorAll(".amount").forEach(setupAmountInput);
+budgetFields.querySelectorAll(".field").forEach(setupRemovableField);
+
+openAddField.addEventListener("click", openModal);
+saveData.addEventListener("click", saveBudgetData);
+openLogs.addEventListener("click", openLogsModal);
+cancelAddField.addEventListener("click", closeModal);
+confirmAddField.addEventListener("click", addCustomField);
+closeLogs.addEventListener("click", closeLogsModal);
+cancelRemoveField.addEventListener("click", closeRemoveFieldModal);
+confirmRemoveField.addEventListener("click", removePendingField);
+
+newFieldName.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        addCustomField();
+    }
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        closeModal();
+        closeLogsModal();
+        closeRemoveFieldModal();
+        document.body.classList.remove("mobile-open");
+    }
+});
+
+addFieldModal.addEventListener("click", event => {
+    if (event.target === addFieldModal) {
+        closeModal();
+    }
+});
+
+logsModal.addEventListener("click", event => {
+    if (event.target === logsModal) {
+        closeLogsModal();
+    }
+});
+
+removeFieldModal.addEventListener("click", event => {
+    if (event.target === removeFieldModal) {
+        closeRemoveFieldModal();
+    }
+});
+
+logsList.addEventListener("click", event => {
+    const deleteButton = event.target.closest("[data-delete-log]");
+
+    if (deleteButton) {
+        deleteLog(deleteButton.dataset.deleteLog);
+    }
+});
+
+openMobileMenu.addEventListener("click", () => {
+    document.body.classList.add("mobile-open");
+});
+
+document.querySelectorAll("[data-close-mobile]").forEach(button => {
+    button.addEventListener("click", () => document.body.classList.remove("mobile-open"));
+});
+
+calculate();
+lucide.createIcons();
+</script>
+
+</body>
+</html>
