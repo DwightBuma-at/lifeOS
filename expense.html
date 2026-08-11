@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#75c7df" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="LifeOS" />
@@ -20,7 +20,8 @@
 
     :root { color-scheme: light; --sidebar-width: 266px; --border: rgba(15, 23, 42, 0.08); }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { min-height: 100vh; margin: 0; color: #111827; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", sans-serif; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+    html { touch-action: manipulation; }
+    body { min-height: 100vh; margin: 0; color: #111827; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", sans-serif; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; overscroll-behavior-x: none; }
     .app-bg { background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%); }
     .sidebar { width: var(--sidebar-width); background: rgba(255, 255, 255, 0.92); border-right: 1px solid var(--border); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); transition: transform 220ms ease; }
     body.sidebar-collapsed .sidebar { width: 74px; padding-left: 12px; padding-right: 12px; }
@@ -661,9 +662,9 @@
       </div>
     </div>
   </div>
-  <script src="auth.js?v=20260811-1"></script>
-  <script src="sidebar.js?v=20260811-1"></script>
-  <script src="download-app.js?v=20260811-1"></script>
+  <script src="auth.js?v=20260811-2"></script>
+  <script src="sidebar.js?v=20260811-2"></script>
+  <script src="download-app.js?v=20260811-2"></script>
   <script>
     const EXPENSE_KEY = "lifeOS_daily_expense_v1";
     const expenseState = loadExpenseState();
@@ -773,7 +774,7 @@
 
     function openExpenseModal() {
       const modal = document.getElementById("expenseModal");
-      document.getElementById("expenseModalTitle").textContent = `Add expense for ${formatShortDate(parseDateKey(selectedExpenseDateKey))}`;
+      document.getElementById("expenseModalTitle").textContent = "Add expense";
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
       window.setTimeout(() => document.getElementById("expenseAmount").focus(), 60);

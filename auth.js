@@ -1138,6 +1138,22 @@
     });
   }
 
+  function lockLifeOSViewportZoom() {
+    let lastTouchEnd = 0;
+
+    document.addEventListener("touchend", (event) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+
+    document.addEventListener("gesturestart", (event) => {
+      event.preventDefault();
+    });
+  }
+
   function initials(name) {
     return (name || "User").split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
   }
@@ -1359,6 +1375,7 @@
 
   function setupAuth() {
     registerLifeOSServiceWorker();
+    lockLifeOSViewportZoom();
 
     const style = document.createElement("style");
     style.textContent = styles;

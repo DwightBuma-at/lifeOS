@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#75c7df" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="LifeOS" />
@@ -46,6 +46,10 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      touch-action: manipulation;
+    }
+
     body {
       min-height: 100vh;
       margin: 0;
@@ -55,6 +59,7 @@
       font-feature-settings: "cv02", "cv03", "cv04", "cv11";
       -webkit-font-smoothing: antialiased;
       text-rendering: geometricPrecision;
+      overscroll-behavior-x: none;
     }
 
     .app-bg {
@@ -738,9 +743,9 @@
     </main>
   </div>
 
-  <script src="auth.js?v=20260811-1"></script>
-  <script src="sidebar.js?v=20260811-1"></script>
-  <script src="download-app.js?v=20260811-1"></script>
+  <script src="auth.js?v=20260811-2"></script>
+  <script src="sidebar.js?v=20260811-2"></script>
+  <script src="download-app.js?v=20260811-2"></script>
   <script>
     const openMobileMenu = document.getElementById("openMobileMenu");
     function readJson(key, fallback) {
