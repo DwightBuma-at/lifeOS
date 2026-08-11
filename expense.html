@@ -50,7 +50,520 @@
     .sidebar-search input::placeholder { color: #a6adb6; }
 .nav-item.active .active-dot { opacity: 1; transform: scaleY(1); }
     .mobile-overlay { opacity: 0; pointer-events: none; transition: opacity 200ms ease; }
+    .expense-shell {
+      width: 100%;
+      padding: 16px;
+    }
+    .expense-wrap {
+      display: grid;
+      gap: 16px;
+      width: 100%;
+    }
+    .expense-hero,
+    .expense-panel,
+    .expense-card {
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 18px 42px rgba(15, 23, 42, 0.045);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+    }
+    .expense-hero {
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .expense-overview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(190px, 0.42fr);
+      align-items: center;
+      gap: 16px;
+    }
+    .expense-kicker {
+      margin: 0 0 3px;
+      color: #35a9cd;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .expense-heading {
+      margin: 0;
+      color: #111827;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.034em;
+      line-height: 1.05;
+    }
+    .expense-date {
+      margin-top: 5px;
+      color: #7b8190;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    .expense-card {
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
+    }
+    .expense-total-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 72px;
+    }
+    .expense-total-copy {
+      min-width: 0;
+    }
+    .expense-card-value {
+      color: #111827;
+      font-size: 25px;
+      font-weight: 620;
+      letter-spacing: -0.034em;
+      line-height: 1;
+    }
+    .expense-card-label {
+      margin-top: 5px;
+      color: #7b8190;
+      font-size: 12px;
+      font-weight: 520;
+      line-height: 1.22;
+    }
+    .expense-total-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 12px;
+      background: #e8f3f2;
+      color: #086b75;
+    }
+    .expense-total-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+    }
+    .expense-date-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .expense-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .expense-panel {
+      border-radius: 22px;
+      overflow: hidden;
+    }
+    .expense-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      padding: 18px;
+    }
+    .expense-panel-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+    .expense-form {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+    }
+    .expense-field {
+      display: grid;
+      gap: 10px;
+    }
+    .expense-label {
+      color: #475569;
+      font-size: 13px;
+      font-weight: 560;
+      letter-spacing: -0.012em;
+    }
+    .expense-input {
+      min-height: 44px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 0 14px;
+      color: #111827;
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    .expense-input:focus {
+      border-color: rgba(8, 107, 117, 0.32);
+      box-shadow: 0 0 0 4px rgba(117, 199, 223, 0.13);
+    }
+    .expense-date-input {
+      min-height: 40px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 0 12px;
+      color: #111827;
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+    .expense-date-input:focus {
+      border-color: rgba(8, 107, 117, 0.32);
+      box-shadow: 0 0 0 4px rgba(117, 199, 223, 0.13);
+    }
+    .expense-button {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 14px;
+      background: #086b75;
+      color: #ffffff;
+      padding: 0 15px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: background-color 160ms ease, transform 160ms ease;
+      white-space: nowrap;
+    }
+    .expense-button:hover { background: #075c65; }
+    .expense-button:active { transform: translateY(1px); }
+    .expense-button.compact {
+      min-height: 40px;
+      border-radius: 12px;
+      padding: 0 13px;
+    }
+    .expense-table-wrap {
+      padding: 16px;
+      overflow-x: auto;
+    }
+    .expense-table {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 16px;
+      background: #ffffff;
+    }
+    .expense-table th,
+    .expense-table td {
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      padding: 13px 14px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    .expense-table th {
+      color: #64748b;
+      background: #f8fbfb;
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+    .expense-table tr:last-child td { border-bottom: 0; }
+    .expense-date-cell {
+      width: 118px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .expense-date-cell strong {
+      display: inline;
+      color: #111827;
+      font-size: 12px;
+      font-weight: 620;
+      letter-spacing: -0.016em;
+    }
+    .expense-amount-cell {
+      width: 150px;
+      color: #111827;
+      font-weight: 620;
+      letter-spacing: -0.02em;
+    }
+    .expense-description-cell {
+      color: #334155;
+      word-break: break-word;
+    }
+    .expense-action-cell {
+      width: 50px;
+      text-align: right;
+    }
+    .expense-delete {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #98a2b3;
+      cursor: pointer;
+    }
+    .expense-delete:hover {
+      background: #fff1f0;
+      color: #d92d20;
+    }
+    .expense-empty {
+      border: 1px dashed rgba(15, 23, 42, 0.12);
+      border-radius: 16px;
+      padding: 18px;
+      color: #7b8190;
+      font-size: 14px;
+      text-align: center;
+    }
+    .weekly-log {
+      display: grid;
+      gap: 18px;
+      padding: 16px;
+    }
+    .weekly-week {
+      display: grid;
+      gap: 14px;
+    }
+    .weekly-week-title {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+    .weekly-day {
+      display: grid;
+      gap: 8px;
+    }
+    .weekly-day-title {
+      color: #111827;
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: -0.024em;
+    }
+    .weekly-day-total {
+      color: #086b75;
+      font-weight: 650;
+    }
+    .weekly-row {
+      display: grid;
+      grid-template-columns: 118px 116px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 12px 14px;
+    }
+    .weekly-time {
+      color: #7b8190;
+      font-size: 12px;
+      font-weight: 520;
+      white-space: nowrap;
+    }
+    .weekly-amount {
+      color: #111827;
+      font-size: 14px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .weekly-description {
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.32;
+      word-break: break-word;
+    }
+    .expense-notice {
+      position: fixed;
+      inset: 0;
+      z-index: 130;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(15, 23, 42, 0.20);
+      backdrop-filter: blur(8px) saturate(130%);
+      -webkit-backdrop-filter: blur(8px) saturate(130%);
+    }
+    .expense-notice.open { display: grid; }
+    .expense-notice-dialog {
+      width: min(100%, 460px);
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.07);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 28px 80px rgba(15, 23, 42, 0.18), 0 1px 2px rgba(15, 23, 42, 0.05);
+    }
+    .expense-modal-dialog {
+      width: min(100%, 500px);
+    }
+    .expense-notice-header,
+    .expense-notice-actions {
+      min-height: 66px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .expense-notice-header {
+      border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+      color: #1f2937;
+      font-size: 21px;
+      font-weight: 560;
+      letter-spacing: -0.026em;
+    }
+    .expense-notice-close {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.68);
+      color: #8a94a3;
+      cursor: pointer;
+    }
+    .expense-notice-close:hover {
+      background: #eef7f5;
+      color: #086b75;
+    }
+    .expense-notice-body {
+      padding: 20px;
+      color: #667085;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .expense-notice-actions {
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid rgba(15, 23, 42, 0.07);
+      background: rgba(248, 251, 252, 0.84);
+      padding: 14px 20px;
+    }
+    .expense-button.secondary {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #ffffff;
+      color: #475569;
+    }
+    .expense-button.secondary:hover { background: #f8fafc; }
+    .expense-button.danger {
+      background: #f04438;
+    }
+    .expense-button.danger:hover { background: #d92d20; }
+    .expense-status-body {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      padding: 28px 22px;
+      text-align: center;
+    }
+    .expense-status-icon {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      border-radius: 999px;
+      color: #086b75;
+      background: #e8f3f2;
+    }
+    .expense-status-icon.success {
+      color: #ffffff;
+      background: #46b35a;
+    }
+    .expense-status-icon.notice {
+      color: #086b75;
+      background: #e8f3f2;
+    }
+    .expense-status-title {
+      margin: 0;
+      color: #111827;
+      font-size: 21px;
+      font-weight: 620;
+      letter-spacing: -0.028em;
+    }
+    .expense-status-copy {
+      margin: 0;
+      color: #667085;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .expense-spinner {
+      width: 26px;
+      height: 26px;
+      border: 3px solid rgba(8, 107, 117, 0.18);
+      border-top-color: #086b75;
+      border-radius: 999px;
+      animation: expenseSpin 780ms linear infinite;
+    }
+    @keyframes expenseSpin {
+      to { transform: rotate(360deg); }
+    }
     @media (max-width: 767px) { .sidebar { width: min(86vw, 304px); transform: translateX(-105%); } .mobile-open .sidebar { transform: translateX(0); } .mobile-open .mobile-overlay { opacity: 1; pointer-events: auto; } }
+    @media (max-width: 767px) {
+      .expense-shell { padding: 20px 14px; }
+      .expense-overview { grid-template-columns: 1fr; }
+      .expense-total-card {
+        min-height: 66px;
+      }
+      .expense-card-value {
+        font-size: 23px;
+      }
+      .expense-panel-header { align-items: flex-start; flex-direction: column; }
+      .expense-button { width: 100%; }
+      .expense-panel-actions { width: 100%; }
+      .expense-toolbar { width: 100%; }
+      .expense-date-controls,
+      .expense-date-input { width: 100%; }
+      .expense-table-wrap {
+        padding: 12px;
+        overflow-x: visible;
+      }
+      .expense-table {
+        min-width: 0;
+        table-layout: fixed;
+      }
+      .expense-table th,
+      .expense-table td {
+        padding: 12px 10px;
+      }
+      .expense-date-cell {
+        width: 96px;
+        font-size: 10px;
+      }
+      .expense-date-cell strong {
+        font-size: 11px;
+      }
+      .expense-amount-cell {
+        width: 88px;
+      }
+      .expense-action-cell {
+        width: 42px;
+      }
+      .expense-delete {
+        width: 32px;
+        height: 32px;
+        margin-left: auto;
+      }
+      .weekly-row {
+        grid-template-columns: 96px minmax(88px, auto) minmax(0, 1fr);
+        gap: 8px;
+        padding: 11px 10px;
+      }
+      .expense-notice-actions { flex-direction: column-reverse; align-items: stretch; }
+    }
   </style>
 </head>
 <body>
@@ -66,8 +579,7 @@
       <nav class="flex-1 space-y-1" aria-label="lifeOS navigation">
         <a href="dashboard.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="layout-dashboard" class="h-5 w-5 shrink-0"></i> Dashboard</a>
         <a href="to-do-list.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> To-Do-List</a>
-        <a href="special-task.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="sparkles" class="h-5 w-5 shrink-0"></i> Special Task</a>
-        <a href="expense.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense (in-progress)</a>
+        <a href="expense.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense</a>
         <a href="sibs.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="calculator" class="h-5 w-5 shrink-0"></i> SIBS Budget</a>
         <a href="workout.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i> Workout (in-progress)</a>
       </nav>
@@ -76,21 +588,449 @@
         <button type="button" data-logout-button class="logout-button grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep focus:outline-none focus:ring-4 focus:ring-brandSky/20" aria-label="Logout"><i data-lucide="log-out" class="h-5 w-5"></i></button>
       </div>
     </aside>
-    <main class="min-h-screen flex-1">
+    <main class="min-h-screen min-w-0 flex-1">
       <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-100 bg-white/80 px-5 backdrop-blur-xl md:hidden">
         <button id="openMobileMenu" type="button" class="grid h-11 w-11 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep" aria-label="Open menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
         <div class="flex items-center gap-2"><span class="brand-mark h-9 w-9 rounded-[14px]" aria-hidden="true"></span><span class="text-lg font-semibold tracking-tight">lifeOS</span></div>
         <span class="h-11 w-11"></span>
       </header>
+      <section class="expense-shell">
+        <div class="expense-wrap">
+          <section class="expense-hero">
+            <div class="expense-overview">
+              <article class="expense-card expense-total-card">
+                <div class="expense-total-copy">
+                  <div id="expenseTotal" class="expense-card-value">PHP 0.00</div>
+                  <div class="expense-card-label">Total expenses</div>
+                </div>
+                <span class="expense-total-icon" aria-hidden="true"><i data-lucide="wallet"></i></span>
+              </article>
+            </div>
+          </section>
+
+          <section class="expense-panel">
+            <div class="expense-panel-header">
+              <div class="expense-panel-actions">
+                <button id="openExpenseModal" type="button" class="expense-button"><i data-lucide="plus" class="h-4 w-4"></i>Add expense</button>
+                <button id="toggleWeeklyLogs" type="button" class="expense-button secondary"><i data-lucide="calendar-range" class="h-4 w-4"></i>Weekly logs</button>
+              </div>
+            </div>
+            <div id="expenseTableArea" class="expense-table-wrap"></div>
+          </section>
+        </div>
+      </section>
     </main>
   </div>
-  <script src="auth.js?v=20260721-2"></script>
-  <script src="sidebar.js?v=20260721-2"></script>
-  <script src="download-app.js?v=20260721-2"></script>
+  <div id="expenseModal" class="expense-notice" aria-hidden="true">
+    <div class="expense-notice-dialog expense-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="expenseModalTitle">
+      <div class="expense-notice-header">
+        <span id="expenseModalTitle">Add expense</span>
+        <button id="closeExpenseModal" type="button" class="expense-notice-close" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <form id="expenseForm" class="expense-form">
+        <label class="expense-field">
+          <span class="expense-label">Amount</span>
+          <input id="expenseAmount" class="expense-input" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" aria-label="Amount" />
+        </label>
+        <label class="expense-field">
+          <span class="expense-label">Description</span>
+          <input id="expenseDescription" class="expense-input" type="text" maxlength="100" placeholder="What did you spend on?" aria-label="Description" />
+        </label>
+        <div class="expense-notice-actions -mx-5 -mb-5 mt-2">
+          <button id="cancelExpenseModal" type="button" class="expense-button secondary">Cancel</button>
+          <button type="submit" class="expense-button"><i data-lucide="check" class="h-4 w-4"></i>Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="expenseStatusModal" class="expense-notice" aria-hidden="true">
+    <div class="expense-notice-dialog" role="dialog" aria-modal="true" aria-labelledby="expenseStatusTitle">
+      <div id="expenseStatusBody" class="expense-status-body"></div>
+    </div>
+  </div>
+  <div id="expenseDeleteModal" class="expense-notice" aria-hidden="true">
+    <div class="expense-notice-dialog" role="dialog" aria-modal="true" aria-labelledby="expenseDeleteTitle">
+      <div class="expense-notice-header">
+        <span id="expenseDeleteTitle">Delete expense?</span>
+        <button id="closeExpenseDelete" type="button" class="expense-notice-close" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <div id="expenseDeleteBody" class="expense-notice-body">This expense will be removed from the selected date.</div>
+      <div class="expense-notice-actions">
+        <button id="cancelExpenseDelete" type="button" class="expense-button secondary">Cancel</button>
+        <button id="confirmExpenseDelete" type="button" class="expense-button danger">Delete</button>
+      </div>
+    </div>
+  </div>
+  <script src="auth.js?v=20260811-1"></script>
+  <script src="sidebar.js?v=20260811-1"></script>
+  <script src="download-app.js?v=20260811-1"></script>
   <script>
+    const EXPENSE_KEY = "lifeOS_daily_expense_v1";
+    const expenseState = loadExpenseState();
+    let selectedExpenseDateKey = getTodayKey();
+    let pendingDeleteExpenseId = null;
+    let weeklyLogsVisible = false;
+
+    function getTodayKey() {
+      return new Date().toLocaleDateString("en-CA");
+    }
+
+    function cryptoId() {
+      if (window.crypto?.randomUUID) return crypto.randomUUID();
+      return `expense-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    function loadExpenseState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(EXPENSE_KEY));
+        return saved && typeof saved === "object" ? saved : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveExpenseState() {
+      localStorage.setItem(EXPENSE_KEY, JSON.stringify(expenseState));
+    }
+
+    function ensureExpensesForDate(dateKey = selectedExpenseDateKey) {
+      if (!Array.isArray(expenseState[dateKey])) expenseState[dateKey] = [];
+      return expenseState[dateKey];
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function parseDateKey(dateKey) {
+      const [year, month, day] = dateKey.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    function formatShortDate(date) {
+      return new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }).format(date);
+    }
+
+    function formatWeekDate(date) {
+      return new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric"
+      }).format(date);
+    }
+
+    function formatLogDate(dateKey) {
+      return new Intl.DateTimeFormat(undefined, {
+        month: "short",
+        day: "numeric"
+      }).format(parseDateKey(dateKey));
+    }
+
+    function formatExpenseTime(expense) {
+      const date = expense.createdAt ? new Date(expense.createdAt) : parseDateKey(expense.dateKey || selectedExpenseDateKey);
+      if (Number.isNaN(date.getTime())) return "--";
+      return new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).format(date);
+    }
+
+    function startOfCalendarWeek(date) {
+      const weekStart = new Date(date);
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+      weekStart.setHours(0, 0, 0, 0);
+      return weekStart;
+    }
+
+    function endOfCalendarWeek(date) {
+      const weekEnd = startOfCalendarWeek(date);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
+      return weekEnd;
+    }
+
+    function isCompletedCalendarWeek(dateKey) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return endOfCalendarWeek(parseDateKey(dateKey)) < today;
+    }
+
+    function formatMoney(amount) {
+      return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "PHP"
+      }).format(amount);
+    }
+
+    function openExpenseModal() {
+      const modal = document.getElementById("expenseModal");
+      document.getElementById("expenseModalTitle").textContent = `Add expense for ${formatShortDate(parseDateKey(selectedExpenseDateKey))}`;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      window.setTimeout(() => document.getElementById("expenseAmount").focus(), 60);
+    }
+
+    function closeExpenseModal() {
+      document.getElementById("expenseModal").classList.remove("open");
+      document.getElementById("expenseModal").setAttribute("aria-hidden", "true");
+    }
+
+    function clearExpenseForm() {
+      document.getElementById("expenseAmount").value = "";
+      document.getElementById("expenseDescription").value = "";
+    }
+
+    function showExpenseStatus(type, title, message) {
+      const statusModal = document.getElementById("expenseStatusModal");
+      const isLoading = type === "loading";
+      const isSuccess = type === "success";
+      const icon = isLoading
+        ? `<span class="expense-status-icon"><span class="expense-spinner" aria-hidden="true"></span></span>`
+        : `<span class="expense-status-icon ${isSuccess ? "success" : "notice"}"><i data-lucide="${isSuccess ? "check" : "info"}"></i></span>`;
+
+      document.getElementById("expenseStatusBody").innerHTML = `
+        ${icon}
+        <h2 id="expenseStatusTitle" class="expense-status-title">${escapeHtml(title)}</h2>
+        <p class="expense-status-copy">${escapeHtml(message)}</p>
+      `;
+      statusModal.classList.add("open");
+      statusModal.setAttribute("aria-hidden", "false");
+      lucide.createIcons();
+    }
+
+    function closeExpenseStatus() {
+      document.getElementById("expenseStatusModal").classList.remove("open");
+      document.getElementById("expenseStatusModal").setAttribute("aria-hidden", "true");
+    }
+
+    function openExpenseDeleteConfirm(id) {
+      const expense = ensureExpensesForDate().find((item) => item.id === id);
+      pendingDeleteExpenseId = id;
+      document.getElementById("expenseDeleteBody").textContent = expense
+        ? `Delete ${formatMoney(Number(expense.amount || 0))} for "${expense.description}"?`
+        : "This expense will be removed from the selected date.";
+      document.getElementById("expenseDeleteModal").classList.add("open");
+      document.getElementById("expenseDeleteModal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeExpenseDeleteConfirm() {
+      pendingDeleteExpenseId = null;
+      document.getElementById("expenseDeleteModal").classList.remove("open");
+      document.getElementById("expenseDeleteModal").setAttribute("aria-hidden", "true");
+    }
+
+    function renderExpensePage() {
+      const expenses = ensureExpensesForDate();
+      const total = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+      const tableArea = document.getElementById("expenseTableArea");
+
+      document.getElementById("expenseTotal").textContent = formatMoney(total);
+
+      if (weeklyLogsVisible) {
+        renderWeeklyLogs();
+        lucide.createIcons();
+        return;
+      }
+
+      if (!expenses.length) {
+        tableArea.innerHTML = `<div class="expense-empty">No expenses recorded for this date.</div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      tableArea.innerHTML = `
+        <table class="expense-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th aria-label="Actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${expenses.map((expense) => `
+              <tr>
+                <td class="expense-date-cell">${escapeHtml(formatExpenseTime({ ...expense, dateKey: selectedExpenseDateKey }))}</td>
+                <td class="expense-amount-cell">${escapeHtml(formatMoney(Number(expense.amount || 0)))}</td>
+                <td class="expense-description-cell">${escapeHtml(expense.description)}</td>
+                <td class="expense-action-cell">
+                  <button type="button" class="expense-delete" data-delete-expense="${expense.id}" aria-label="Delete expense">
+                    <i data-lucide="trash-2"></i>
+                  </button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+      lucide.createIcons();
+    }
+
+    function getExpenseDateKeys() {
+      return Object.keys(expenseState)
+        .filter((dateKey) => /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && Array.isArray(expenseState[dateKey]))
+        .sort((a, b) => b.localeCompare(a));
+    }
+
+    function renderWeeklyLogs() {
+      const weeklyLogArea = document.getElementById("expenseTableArea");
+      const weeks = new Map();
+
+      getExpenseDateKeys()
+        .filter(isCompletedCalendarWeek)
+        .forEach((dateKey) => {
+          const date = parseDateKey(dateKey);
+          const weekStart = startOfCalendarWeek(date);
+          const weekEnd = endOfCalendarWeek(date);
+          const weekKey = weekStart.toLocaleDateString("en-CA");
+          const entries = expenseState[dateKey]
+            .map((expense) => ({ ...expense, dateKey }))
+            .sort((a, b) => {
+              const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+              const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+              return bTime - aTime;
+            });
+
+          if (!entries.length) return;
+
+          if (!weeks.has(weekKey)) {
+            weeks.set(weekKey, {
+              start: weekStart,
+              end: weekEnd,
+              days: []
+            });
+          }
+
+          weeks.get(weekKey).days.push({
+            dateKey,
+            entries,
+            total: entries.reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
+          });
+        });
+
+      const completedWeeks = Array.from(weeks.values())
+        .map((week) => ({
+          ...week,
+          days: week.days.sort((a, b) => b.dateKey.localeCompare(a.dateKey))
+        }))
+        .sort((a, b) => b.start - a.start);
+
+      if (!completedWeeks.length) {
+        weeklyLogArea.innerHTML = `<div class="expense-empty">No completed weekly logs yet. This week will appear after Saturday ends.</div>`;
+        return;
+      }
+
+      weeklyLogArea.innerHTML = `<div class="weekly-log">${completedWeeks.map((week) => `
+        <section class="weekly-week">
+          <div class="weekly-week-title">${escapeHtml(formatWeekDate(week.start))} - ${escapeHtml(formatWeekDate(week.end))}</div>
+          ${week.days.map((day) => `
+            <section class="weekly-day">
+              <h3 class="weekly-day-title">${escapeHtml(formatLogDate(day.dateKey))} - <span class="weekly-day-total">Total = ${escapeHtml(formatMoney(day.total))}</span></h3>
+              ${day.entries.map((expense) => `
+                <article class="weekly-row">
+                  <span class="weekly-time">${escapeHtml(formatLogDate(expense.dateKey))} · ${escapeHtml(formatExpenseTime(expense))}</span>
+                  <span class="weekly-amount">${escapeHtml(formatMoney(Number(expense.amount || 0)))}</span>
+                  <span class="weekly-description">${escapeHtml(expense.description)}</span>
+                </article>
+              `).join("")}
+            </section>
+          `).join("")}
+        </section>
+      `).join("")}</div>`;
+    }
+
+    document.getElementById("expenseForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const amountInput = document.getElementById("expenseAmount");
+      const descriptionInput = document.getElementById("expenseDescription");
+      const amount = Number(amountInput.value);
+      const description = descriptionInput.value.trim();
+
+      if (!Number.isFinite(amount) || amount <= 0 || !description) {
+        showExpenseStatus("notice", "Kindly add details", "Please add a valid amount and description before saving.");
+        window.setTimeout(() => {
+          closeExpenseStatus();
+          openExpenseModal();
+        }, 1200);
+        return;
+      }
+
+      closeExpenseModal();
+      showExpenseStatus("loading", "Saving expense", "Please wait while LifeOS adds this to the selected date.");
+
+      window.setTimeout(() => {
+        ensureExpensesForDate().push({ id: cryptoId(), amount, description, createdAt: new Date().toISOString() });
+        clearExpenseForm();
+        saveExpenseState();
+        renderExpensePage();
+        showExpenseStatus("success", "Expense added", "Your expense was saved locally and added to the selected date.");
+
+        window.setTimeout(closeExpenseStatus, 1100);
+      }, 650);
+    });
+
+    document.getElementById("expenseTableArea").addEventListener("click", (event) => {
+      const deleteButton = event.target.closest("[data-delete-expense]");
+      if (!deleteButton) return;
+
+      openExpenseDeleteConfirm(deleteButton.dataset.deleteExpense);
+    });
+
+    document.getElementById("confirmExpenseDelete").addEventListener("click", () => {
+      if (!pendingDeleteExpenseId) return;
+
+      const deleteId = pendingDeleteExpenseId;
+      closeExpenseDeleteConfirm();
+      showExpenseStatus("loading", "Deleting expense", "Please wait while LifeOS removes this expense.");
+
+      window.setTimeout(() => {
+        const selectedExpenses = ensureExpensesForDate();
+        const nextExpenses = selectedExpenses.filter((expense) => expense.id !== deleteId);
+        expenseState[selectedExpenseDateKey] = nextExpenses;
+        saveExpenseState();
+        renderExpensePage();
+        showExpenseStatus("success", "Expense deleted", "The expense was removed successfully.");
+
+        window.setTimeout(closeExpenseStatus, 1100);
+      }, 650);
+    });
+
+    document.getElementById("toggleWeeklyLogs").addEventListener("click", () => {
+      weeklyLogsVisible = !weeklyLogsVisible;
+      const toggleButton = document.getElementById("toggleWeeklyLogs");
+      toggleButton.classList.toggle("secondary", !weeklyLogsVisible);
+      toggleButton.innerHTML = weeklyLogsVisible
+        ? '<i data-lucide="arrow-left" class="h-4 w-4"></i>Back to daily logs'
+        : '<i data-lucide="calendar-range" class="h-4 w-4"></i>Weekly logs';
+      document.getElementById("openExpenseModal").classList.toggle("hidden", weeklyLogsVisible);
+      renderExpensePage();
+    });
+    document.getElementById("openExpenseModal").addEventListener("click", openExpenseModal);
+    document.getElementById("closeExpenseModal").addEventListener("click", closeExpenseModal);
+    document.getElementById("cancelExpenseModal").addEventListener("click", closeExpenseModal);
+    document.getElementById("closeExpenseDelete").addEventListener("click", closeExpenseDeleteConfirm);
+    document.getElementById("cancelExpenseDelete").addEventListener("click", closeExpenseDeleteConfirm);
     document.getElementById("openMobileMenu").addEventListener("click", () => document.body.classList.add("mobile-open"));
     document.querySelectorAll("[data-close-mobile]").forEach((button) => button.addEventListener("click", () => document.body.classList.remove("mobile-open")));
-    document.addEventListener("keydown", (event) => { if (event.key === "Escape") document.body.classList.remove("mobile-open"); });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.body.classList.remove("mobile-open");
+        closeExpenseModal();
+        closeExpenseStatus();
+        closeExpenseDeleteConfirm();
+      }
+    });
+    renderExpensePage();
     lucide.createIcons();
   </script>
 </body>

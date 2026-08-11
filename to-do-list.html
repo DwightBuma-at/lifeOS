@@ -671,13 +671,9 @@
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
           <i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> To-Do-List
         </a>
-        <a href="special-task.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
-          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
-          <i data-lucide="sparkles" class="h-5 w-5 shrink-0"></i> Special Task
-        </a>
         <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
-          <i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense (in-progress)
+          <i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense
         </a>
         <a href="sibs.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
@@ -785,12 +781,11 @@
       <button id="cancelPhoneAction" type="button" class="phone-cancel">Cancel</button>
     </section>
   </div>
-  <script src="auth.js?v=20260721-2"></script>
-  <script src="sidebar.js?v=20260721-2"></script>
-  <script src="download-app.js?v=20260721-2"></script>
+  <script src="auth.js?v=20260811-1"></script>
+  <script src="sidebar.js?v=20260811-1"></script>
+  <script src="download-app.js?v=20260811-1"></script>
   <script>
     const TODO_KEY = "lifeOS_daily_todo_v1";
-    const todayKey = new Date().toLocaleDateString("en-CA");
     const todoState = loadTodoState();
     let pendingDelete = null;
     let draggedItem = null;
@@ -801,25 +796,37 @@
 
     function loadTodoState() {
       const fallback = {
-        routines: [
-          { id: cryptoId(), title: "Morning planning" },
-          { id: cryptoId(), title: "Drink water" },
-          { id: cryptoId(), title: "Move for 10 minutes" }
-        ],
-        completions: {},
-        specialTasks: {}
+        routines: [],
+        completions: {}
       };
 
       try {
         const saved = JSON.parse(localStorage.getItem(TODO_KEY));
         return {
           routines: Array.isArray(saved?.routines) ? saved.routines : fallback.routines,
-          completions: saved?.completions && typeof saved.completions === "object" ? saved.completions : {},
-          specialTasks: saved?.specialTasks && typeof saved.specialTasks === "object" ? saved.specialTasks : {}
+          completions: normalizeCompletions(saved?.completions)
         };
       } catch {
         return fallback;
       }
+    }
+
+    function normalizeCompletions(value) {
+      if (!value || typeof value !== "object") return {};
+      const entries = Object.entries(value);
+      const hasDateBuckets = entries.some(([key, item]) => /^\d{4}-\d{2}-\d{2}$/.test(key) && item && typeof item === "object");
+
+      if (!hasDateBuckets) {
+        return Object.fromEntries(entries.filter(([, item]) => typeof item === "boolean"));
+      }
+
+      return entries.reduce((merged, [, bucket]) => {
+        if (!bucket || typeof bucket !== "object") return merged;
+        Object.entries(bucket).forEach(([routineId, isDone]) => {
+          if (isDone) merged[routineId] = true;
+        });
+        return merged;
+      }, {});
     }
 
     function saveTodoState() {
@@ -832,9 +839,8 @@
       return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     }
 
-    function ensureTodayBuckets() {
-      if (!todoState.completions[todayKey]) todoState.completions[todayKey] = {};
-      if (!todoState.specialTasks[todayKey]) todoState.specialTasks[todayKey] = [];
+    function ensureCompletionBucket() {
+      if (!todoState.completions || typeof todoState.completions !== "object") todoState.completions = {};
     }
 
     function escapeHtml(value) {
@@ -856,7 +862,7 @@
     }
 
     function renderTodoPage() {
-      ensureTodayBuckets();
+      ensureCompletionBucket();
       document.getElementById("todoDateLabel").textContent = formatToday();
       renderRoutines();
       renderProgress();
@@ -865,7 +871,7 @@
 
     function renderRoutines() {
       const list = document.getElementById("routineList");
-      const completions = todoState.completions[todayKey];
+      const completions = todoState.completions;
 
       if (!todoState.routines.length) {
         list.innerHTML = `<div class="todo-empty">No non-negotiables yet. Create your first daily routine.</div>`;
@@ -881,7 +887,7 @@
             </button>
             <div>
               <div class="todo-title">${escapeHtml(routine.title)}</div>
-              <div class="todo-meta">Daily non-negotiable • resets tomorrow</div>
+              <div class="todo-meta">Daily non-negotiable</div>
             </div>
             <button type="button" class="todo-delete" data-delete-routine="${routine.id}" aria-label="Delete routine"><i data-lucide="trash-2"></i></button>
           </article>
@@ -890,7 +896,7 @@
     }
 
     function renderProgress() {
-      const completions = todoState.completions[todayKey];
+      const completions = todoState.completions;
       const routineDone = todoState.routines.filter((routine) => completions[routine.id]).length;
       const percent = todoState.routines.length ? Math.round((routineDone / todoState.routines.length) * 100) : 0;
 
@@ -950,9 +956,9 @@
     function applyPendingCheckAction() {
       if (!pendingCheckAction) return;
 
-      ensureTodayBuckets();
+      ensureCompletionBucket();
       if (pendingCheckAction.type === "routine") {
-        todoState.completions[todayKey][pendingCheckAction.id] = pendingCheckAction.nextValue;
+        todoState.completions[pendingCheckAction.id] = pendingCheckAction.nextValue;
       }
 
       saveTodoState();
@@ -1043,8 +1049,6 @@
 
         if (type === "routine") {
           todoState.routines = reorderItemsByIds(todoState.routines, orderedIds);
-        } else {
-          todoState.specialTasks[todayKey] = reorderItemsByIds(todoState.specialTasks[todayKey], orderedIds);
         }
 
         saveTodoState();
@@ -1088,7 +1092,7 @@
       }
       const toggle = event.target.closest("[data-toggle-routine]");
       const del = event.target.closest("[data-delete-routine]");
-      ensureTodayBuckets();
+      ensureCompletionBucket();
 
       if (toggle) {
         const id = toggle.dataset.toggleRoutine;
@@ -1097,7 +1101,7 @@
           type: "routine",
           id,
           title: routine ? routine.title : "Non-negotiable",
-          nextValue: !todoState.completions[todayKey][id]
+          nextValue: !todoState.completions[id]
         });
       }
 
@@ -1153,7 +1157,7 @@
 
       if (pendingDelete.type === "routine") {
         todoState.routines = todoState.routines.filter((routine) => routine.id !== pendingDelete.id);
-        Object.values(todoState.completions).forEach((bucket) => delete bucket[pendingDelete.id]);
+        delete todoState.completions[pendingDelete.id];
       }
 
       saveTodoState();

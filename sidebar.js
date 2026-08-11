@@ -1,10 +1,6 @@
 (function () {
   const TODO_KEY = "lifeOS_daily_todo_v1";
 
-  function getTodayKey() {
-    return new Date().toLocaleDateString("en-CA");
-  }
-
   function readTodoState() {
     try {
       const state = JSON.parse(localStorage.getItem(TODO_KEY));
@@ -77,20 +73,29 @@
     badge.setAttribute("aria-label", `${count} unchecked item${count === 1 ? "" : "s"}`);
   }
 
+  function normalizeCompletions(value) {
+    if (!value || typeof value !== "object") return {};
+    const entries = Object.entries(value);
+    const hasDateBuckets = entries.some(([key, item]) => /^\d{4}-\d{2}-\d{2}$/.test(key) && item && typeof item === "object");
+    if (!hasDateBuckets) return Object.fromEntries(entries.filter(([, item]) => typeof item === "boolean"));
+
+    return entries.reduce((merged, [, bucket]) => {
+      if (!bucket || typeof bucket !== "object") return merged;
+      Object.entries(bucket).forEach(([routineId, isDone]) => {
+        if (isDone) merged[routineId] = true;
+      });
+      return merged;
+    }, {});
+  }
+
   function updateLifeOSSidebarBadges() {
     const state = readTodoState();
-    const todayKey = getTodayKey();
     const routines = Array.isArray(state.routines) ? state.routines : [];
-    const completions = state.completions?.[todayKey] && typeof state.completions[todayKey] === "object" ? state.completions[todayKey] : {};
-    const specialTasks = Array.isArray(state.specialTasks?.[todayKey]) ? state.specialTasks[todayKey] : [];
+    const completions = normalizeCompletions(state.completions);
     const uncheckedRoutines = routines.filter((routine) => !completions[routine.id]).length;
-    const uncheckedSpecialTasks = specialTasks.filter((task) => !task.completed).length;
 
     document.querySelectorAll('.sidebar a[href="to-do-list.html"]').forEach((link) => {
       setBadge(link, "todo", uncheckedRoutines);
-    });
-    document.querySelectorAll('.sidebar a[href="special-task.html"]').forEach((link) => {
-      setBadge(link, "special", uncheckedSpecialTasks);
     });
   }
 

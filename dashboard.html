@@ -650,15 +650,10 @@
           <i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i>
           To-Do-List
         </a>
-        <a href="special-task.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
-          <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
-          <i data-lucide="sparkles" class="h-5 w-5 shrink-0"></i>
-          Special Task
-        </a>
         <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
           <i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i>
-          Expense (in-progress)
+          Expense
         </a>
         <a href="sibs.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
@@ -713,13 +708,6 @@
               <p>Total tasks</p>
               <span class="life-stat-icon" aria-hidden="true"><i data-lucide="clipboard-check"></i></span>
             </article>
-
-            <article class="life-stat blue">
-              <h2>Gym</h2>
-              <div class="life-stat-value text-[22px] font-[500] tracking-[-0.03em]">Upper Body</div>
-              <p>Workout</p>
-              <span class="life-stat-icon round" aria-hidden="true"><i data-lucide="dumbbell"></i></span>
-            </article>
           </div>
 
           <div class="progress-grid">
@@ -745,29 +733,14 @@
             </article>
           </div>
 
-          <article class="up-next">
-            <h2>Up Next</h2>
-            <div class="up-next-list">
-              <div class="up-next-item">
-                <i data-lucide="calendar-days"></i>
-                <span class="up-next-time">10:00 AM</span>
-                <span>Study Session</span>
-              </div>
-              <div class="up-next-item">
-                <i data-lucide="dumbbell"></i>
-                <span class="up-next-time">01:00 PM</span>
-                <span>Chest Workout</span>
-              </div>
-            </div>
-          </article>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="auth.js?v=20260721-2"></script>
-  <script src="sidebar.js?v=20260721-2"></script>
-  <script src="download-app.js?v=20260721-2"></script>
+  <script src="auth.js?v=20260811-1"></script>
+  <script src="sidebar.js?v=20260811-1"></script>
+  <script src="download-app.js?v=20260811-1"></script>
   <script>
     const openMobileMenu = document.getElementById("openMobileMenu");
     function readJson(key, fallback) {
@@ -778,19 +751,31 @@
       }
     }
 
+    function normalizeCompletions(value) {
+      if (!value || typeof value !== "object") return {};
+      const entries = Object.entries(value);
+      const hasDateBuckets = entries.some(([key, item]) => /^\d{4}-\d{2}-\d{2}$/.test(key) && item && typeof item === "object");
+      if (!hasDateBuckets) return Object.fromEntries(entries.filter(([, item]) => typeof item === "boolean"));
+
+      return entries.reduce((merged, [, bucket]) => {
+        if (!bucket || typeof bucket !== "object") return merged;
+        Object.entries(bucket).forEach(([routineId, isDone]) => {
+          if (isDone) merged[routineId] = true;
+        });
+        return merged;
+      }, {});
+    }
+
     function updateDashboardStats() {
-      const todayKey = new Date().toLocaleDateString("en-CA");
       const state = readJson("lifeOS_daily_todo_v1", {});
       const accounts = readJson("lifeOS_accounts_v1", []);
       const username = localStorage.getItem("lifeOS_current_user_v1");
       const account = accounts.find((item) => item.username === username);
       const routines = Array.isArray(state.routines) ? state.routines : [];
-      const completions = state.completions?.[todayKey] && typeof state.completions[todayKey] === "object" ? state.completions[todayKey] : {};
-      const specialTasks = Array.isArray(state.specialTasks?.[todayKey]) ? state.specialTasks[todayKey] : [];
+      const completions = normalizeCompletions(state.completions);
       const routineDone = routines.filter((routine) => completions[routine.id]).length;
-      const specialDone = specialTasks.filter((task) => task.completed).length;
-      const total = routines.length + specialTasks.length;
-      const done = routineDone + specialDone;
+      const total = routines.length;
+      const done = routineDone;
       const percent = total ? Math.round((done / total) * 100) : 0;
 
       document.querySelector("[data-dashboard-name]").textContent = account?.username || "Dwight";

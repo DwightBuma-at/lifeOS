@@ -7,7 +7,6 @@
   const APP_PAGES = new Set([
     "dashboard.html",
     "to-do-list.html",
-    "special-task.html",
     "expense.html",
     "sibs.html",
     "workout.html"
