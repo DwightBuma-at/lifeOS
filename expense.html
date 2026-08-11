@@ -662,9 +662,9 @@
       </div>
     </div>
   </div>
-  <script src="auth.js?v=20260811-3"></script>
-  <script src="sidebar.js?v=20260811-3"></script>
-  <script src="download-app.js?v=20260811-3"></script>
+  <script src="auth.js?v=20260811-4"></script>
+  <script src="sidebar.js?v=20260811-4"></script>
+  <script src="download-app.js?v=20260811-4"></script>
   <script>
     const EXPENSE_KEY = "lifeOS_daily_expense_v1";
     const expenseState = loadExpenseState();
@@ -831,10 +831,9 @@
 
     function renderExpensePage() {
       const expenses = ensureExpensesForDate();
-      const total = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
       const tableArea = document.getElementById("expenseTableArea");
 
-      document.getElementById("expenseTotal").textContent = formatMoney(total);
+      document.getElementById("expenseTotal").textContent = formatMoney(getAllExpensesTotal());
 
       if (weeklyLogsVisible) {
         renderWeeklyLogs();
@@ -881,6 +880,12 @@
       return Object.keys(expenseState)
         .filter((dateKey) => /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && Array.isArray(expenseState[dateKey]))
         .sort((a, b) => b.localeCompare(a));
+    }
+
+    function getAllExpensesTotal() {
+      return getExpenseDateKeys().reduce((total, dateKey) => {
+        return total + expenseState[dateKey].reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+      }, 0);
     }
 
     function renderWeeklyLogs() {
