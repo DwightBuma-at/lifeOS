@@ -1,4 +1,4 @@
-const LIFEOS_SW_VERSION = "2026-08-11-2";
+const LIFEOS_SW_VERSION = "2026-08-11-3";
 const LIFEOS_CACHE = `lifeos-app-${LIFEOS_SW_VERSION}`;
 const LIFEOS_LOCAL_ASSETS = [
   "./",

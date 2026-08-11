@@ -9,7 +9,7 @@
   <link rel="manifest" href="lifeos.webmanifest" />
   <link rel="apple-touch-icon" href="lifeos_icon.png" />
   <link rel="icon" type="image/png" href="lifeos_icon.png" />
-  <title>lifeOS To-Do-List</title>
+  <title>lifeOS My To Do</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -161,9 +161,9 @@
     }
     .todo-overview {
       display: grid;
-      grid-template-columns: minmax(180px, 1fr) minmax(0, 1.45fr);
+      grid-template-columns: 1fr;
       align-items: center;
-      gap: 18px;
+      gap: 12px;
     }
     .todo-kicker {
       margin: 0 0 3px;
@@ -674,7 +674,7 @@
         </a>
         <a href="to-do-list.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page">
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
-          <i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> To-Do-List
+          <i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> My To Do
         </a>
         <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5">
           <span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span>
@@ -711,19 +711,7 @@
         <div class="todo-hero mb-4">
           <div class="todo-overview">
             <div>
-              <p class="todo-kicker">Daily checklist</p>
-              <h1 class="todo-heading">To-Do-List</h1>
-              <p id="todoDateLabel" class="todo-date"></p>
-            </div>
-            <div class="todo-stats">
-              <article class="todo-card">
-                <div id="routineProgressValue" class="todo-card-value">0/0</div>
-                <div class="todo-card-label">Non-negotiables checked today</div>
-              </article>
-              <article class="todo-card">
-                <div id="dailyProgressValue" class="todo-card-value">0%</div>
-                <div class="todo-card-label">Non-negotiable completion</div>
-              </article>
+              <h1 class="todo-heading">My To Do</h1>
             </div>
           </div>
         </div>
@@ -732,13 +720,12 @@
           <section class="todo-panel">
             <div class="todo-panel-header">
               <div>
-                <h2 class="text-lg font-[600] tracking-[-0.028em] text-ink">Non-negotiable</h2>
-                <p class="mt-1 text-sm text-muted">Routines that reset every day and should be checked daily.</p>
+                <h2 class="text-lg font-[600] tracking-[-0.028em] text-ink">Tasks</h2>
               </div>
             </div>
             <form id="routineForm" class="todo-input-row">
-              <input id="routineInput" class="todo-input" type="text" maxlength="80" placeholder="Create a daily non-nego routine..." />
-              <button type="submit" class="todo-button"><i data-lucide="plus" class="h-4 w-4"></i>Add routine</button>
+              <input id="routineInput" class="todo-input" type="text" maxlength="80" placeholder="Add a task..." />
+              <button type="submit" class="todo-button"><i data-lucide="plus" class="h-4 w-4"></i>Add task</button>
             </form>
             <div id="routineList" class="todo-list"></div>
           </section>
@@ -786,9 +773,9 @@
       <button id="cancelPhoneAction" type="button" class="phone-cancel">Cancel</button>
     </section>
   </div>
-  <script src="auth.js?v=20260811-2"></script>
-  <script src="sidebar.js?v=20260811-2"></script>
-  <script src="download-app.js?v=20260811-2"></script>
+  <script src="auth.js?v=20260811-3"></script>
+  <script src="sidebar.js?v=20260811-3"></script>
+  <script src="download-app.js?v=20260811-3"></script>
   <script>
     const TODO_KEY = "lifeOS_daily_todo_v1";
     const todoState = loadTodoState();
@@ -857,20 +844,9 @@
         .replaceAll("'", "&#039;");
     }
 
-    function formatToday() {
-      return new Intl.DateTimeFormat(undefined, {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-      }).format(new Date());
-    }
-
     function renderTodoPage() {
       ensureCompletionBucket();
-      document.getElementById("todoDateLabel").textContent = formatToday();
       renderRoutines();
-      renderProgress();
       lucide.createIcons();
     }
 
@@ -879,7 +855,7 @@
       const completions = todoState.completions;
 
       if (!todoState.routines.length) {
-        list.innerHTML = `<div class="todo-empty">No non-negotiables yet. Create your first daily routine.</div>`;
+        list.innerHTML = `<div class="todo-empty">No tasks yet. Add your first task.</div>`;
         return;
       }
 
@@ -892,21 +868,11 @@
             </button>
             <div>
               <div class="todo-title">${escapeHtml(routine.title)}</div>
-              <div class="todo-meta">Daily non-negotiable</div>
             </div>
             <button type="button" class="todo-delete" data-delete-routine="${routine.id}" aria-label="Delete routine"><i data-lucide="trash-2"></i></button>
           </article>
         `;
       }).join("");
-    }
-
-    function renderProgress() {
-      const completions = todoState.completions;
-      const routineDone = todoState.routines.filter((routine) => completions[routine.id]).length;
-      const percent = todoState.routines.length ? Math.round((routineDone / todoState.routines.length) * 100) : 0;
-
-      document.getElementById("routineProgressValue").textContent = `${routineDone}/${todoState.routines.length}`;
-      document.getElementById("dailyProgressValue").textContent = `${percent}%`;
     }
 
     function reorderItemsByIds(items, orderedIds) {
@@ -1078,7 +1044,7 @@
       const input = document.getElementById("routineInput");
       const title = input.value.trim();
       if (!title) {
-        showTodoNotice("Kindly add a routine", "Please type a non-negotiable routine before clicking Add routine.");
+        showTodoNotice("Kindly add a task", "Please type a task before clicking Add task.");
         input.focus();
         return;
       }
@@ -1105,7 +1071,7 @@
         openPhoneAction({
           type: "routine",
           id,
-          title: routine ? routine.title : "Non-negotiable",
+          title: routine ? routine.title : "Task",
           nextValue: !todoState.completions[id]
         });
       }
@@ -1115,7 +1081,7 @@
         openDeleteConfirm({
           type: "routine",
           id: del.dataset.deleteRoutine,
-          message: routine ? `Delete "${routine.title}" from your daily non-negotiables?` : "Delete this daily non-negotiable?"
+          message: routine ? `Delete "${routine.title}" from your tasks?` : "Delete this task?"
         });
       }
     });
