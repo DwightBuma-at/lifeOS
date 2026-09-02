@@ -1,4 +1,4 @@
-const LIFEOS_SW_VERSION = "2026-08-11-4";
+const LIFEOS_SW_VERSION = "2026-09-02-20";
 const LIFEOS_CACHE = `lifeos-app-${LIFEOS_SW_VERSION}`;
 const LIFEOS_LOCAL_ASSETS = [
   "./",
@@ -8,6 +8,7 @@ const LIFEOS_LOCAL_ASSETS = [
   "./expense.html",
   "./sibs.html",
   "./workout.html",
+  "./workout_history.html",
   "./auth.js",
   "./sidebar.js",
   "./download-app.js",

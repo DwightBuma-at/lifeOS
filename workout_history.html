@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#75c7df" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="LifeOS" />
+  <link rel="manifest" href="lifeos.webmanifest" />
+  <link rel="apple-touch-icon" href="lifeos_icon.png" />
+  <link rel="icon" type="image/png" href="lifeos_icon.png" />
+  <title>lifeOS - Workout History</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brandGreen: "#8ccf72", brandSky: "#75c7df", brandSkyDeep: "#35a9cd", brandSoft: "#edf8f3", ink: "#111827", muted: "#7b8190" } } } };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700;750&display=swap");
+
+    :root {
+      color-scheme: light;
+      --sidebar-width: 266px;
+      --border: rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: #111827;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", sans-serif;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    .app-bg {
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdfc 100%);
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(255, 255, 255, 0.92);
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      transition: transform 220ms ease;
+    }
+
+    body.sidebar-collapsed .sidebar {
+      width: 74px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    body.sidebar-collapsed .sidebar-brand-text,
+    body.sidebar-collapsed .sidebar-search,
+    body.sidebar-collapsed .nav-item {
+      font-size: 0 !important;
+    }
+
+    body.sidebar-collapsed .nav-item {
+      justify-content: center;
+      gap: 0;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+
+    body.sidebar-collapsed .profile-copy,
+    body.sidebar-collapsed .logout-button {
+      display: none;
+    }
+
+    body.sidebar-collapsed .profile-card {
+      justify-content: center;
+      padding: 8px;
+    }
+
+    .sidebar .brand-mark {
+      width: 64px !important;
+      height: 64px !important;
+      border-radius: 12px !important;
+      box-shadow: none;
+      mix-blend-mode: multiply;
+    }
+
+    .sidebar-brand-text {
+      font-size: 32px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.03em;
+    }
+
+    .sidebar-brand-text .brand-life {
+      color: #78c86a;
+    }
+
+    .sidebar-brand-text .brand-os {
+      color: #63bde3;
+    }
+
+    .brand-mark {
+      position: relative;
+      overflow: hidden;
+      background: url("lifeos_icon.png") center / contain no-repeat;
+      box-shadow: none;
+    }
+
+    .nav-item {
+      min-height: 38px;
+      color: #20252d !important;
+      font-size: 16px !important;
+      font-weight: 400 !important;
+      letter-spacing: -0.014em;
+      line-height: 1.2;
+      border-radius: 8px !important;
+      transition: background 160ms ease, color 160ms ease;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      color: #9aa3ad;
+      stroke-width: 1.9;
+      transition: color 160ms ease;
+    }
+
+    .nav-item:hover {
+      background: #f3faf8;
+      color: #0b6f78;
+    }
+
+    .nav-item.active {
+      color: #086b75 !important;
+      background: #e8f3f2;
+      box-shadow: none;
+      font-weight: 500 !important;
+    }
+
+    .nav-item.active svg,
+    .nav-item:hover svg {
+      color: #086b75;
+    }
+
+    .active-dot {
+      display: none;
+    }
+
+    .sidebar nav {
+      gap: 6px;
+    }
+
+    .sidebar-search {
+      height: 38px;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.72);
+      color: #a6adb6;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.025);
+    }
+
+    .sidebar-search svg {
+      width: 16px;
+      height: 16px;
+      color: #9aa3ad;
+      stroke-width: 1.9;
+    }
+
+    .sidebar-search input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #1f2933;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: -0.012em;
+      outline: none;
+    }
+
+    .sidebar-search input::placeholder {
+      color: #a6adb6;
+    }
+
+    .mobile-overlay {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    @media (max-width: 767px) {
+      .sidebar {
+        width: min(86vw, 304px);
+        transform: translateX(-105%);
+      }
+
+      .mobile-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .mobile-open .mobile-overlay {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
+    /* History Styles */
+    .history-shell {
+      padding: 24px 20px 48px;
+    }
+
+    @media (min-width: 768px) {
+      .history-shell {
+        padding: 32px 32px 56px;
+      }
+    }
+
+    .history-wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .history-header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .history-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .history-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+    }
+
+    .history-subtitle {
+      font-size: 13.5px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-val {
+      font-size: 24px;
+      font-weight: 750;
+      color: #086b75;
+      letter-spacing: -0.02em;
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+
+    @media (min-width: 640px) {
+      .controls-bar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .filter-chips {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .filter-chip {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      background: #ffffff;
+      color: #475569;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 140ms ease;
+    }
+
+    .filter-chip:hover {
+      background: #f8fafc;
+      color: #086b75;
+    }
+
+    .filter-chip.active {
+      background: #086b75;
+      color: #ffffff;
+      border-color: #086b75;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 220px;
+      height: 38px;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 10px;
+      padding: 0 12px;
+      background: #f8fafc;
+    }
+
+    .search-wrap input {
+      border: 0;
+      background: transparent;
+      outline: none;
+      font-size: 13px;
+      width: 100%;
+      color: #1e293b;
+    }
+
+    /* History Sessions List */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .history-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+      overflow: hidden;
+      transition: box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .history-card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid transparent;
+      cursor: pointer;
+      user-select: none;
+      transition: background 140ms ease;
+    }
+
+    .history-card-header:hover {
+      background: #f8fafc;
+    }
+
+    .history-card.open .history-card-header {
+      border-bottom-color: rgba(15, 23, 42, 0.06);
+    }
+
+    @media (min-width: 640px) {
+      .history-card-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .history-header-left {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .history-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .history-chevron-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: transparent;
+      border: 0;
+      color: #94a3b8;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 140ms ease;
+    }
+
+    .history-card-header:hover .history-chevron-btn {
+      background: #f1f5f9;
+      color: #086b75;
+    }
+
+    .history-chevron {
+      width: 20px;
+      height: 20px;
+      transition: transform 200ms ease;
+    }
+
+    .history-card.open .history-chevron {
+      transform: rotate(180deg);
+    }
+
+    .history-card-collapsible {
+      display: none;
+    }
+
+    .history-card.open .history-card-collapsible {
+      display: block;
+    }
+
+    .history-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.015em;
+    }
+
+    .history-card-sub {
+      font-size: 12.5px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .history-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .history-status-badge.completed {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .history-status-badge.partial {
+      background: #fef3c7;
+      color: #b45309;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .history-exercises-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #fbfdfd;
+    }
+
+    .history-exercise-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.05);
+    }
+
+    @media (min-width: 640px) {
+      .history-exercise-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .history-ex-name {
+      font-size: 14.5px;
+      font-weight: 650;
+      color: #1e293b;
+    }
+
+    .history-ex-target {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+
+    .history-sets-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .history-set-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 9px;
+      border-radius: 7px;
+      background: #f0f7f6;
+      border: 1px solid rgba(8, 107, 117, 0.18);
+      color: #086b75;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    .history-set-pill.done {
+      background: #dcfce7;
+      color: #166534;
+      border-color: rgba(34, 197, 94, 0.3);
+      font-weight: 700;
+    }
+
+    .history-card-footer {
+      padding: 10px 20px;
+      background: #ffffff;
+      border-top: 1px solid rgba(15, 23, 42, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .history-btn-delete {
+      background: transparent;
+      border: 0;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 140ms ease;
+    }
+
+    .history-btn-delete:hover {
+      color: #dc2626;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 20px;
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px dashed rgba(15, 23, 42, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .empty-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: #f0fdf4;
+      color: #166534;
+      display: grid;
+      place-items: center;
+      margin-bottom: 4px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      place-items: center;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16);
+      padding: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-bg min-h-screen md:flex">
+    <div class="mobile-overlay fixed inset-0 z-30 bg-slate-950/25 md:hidden" data-close-mobile></div>
+    <aside class="sidebar fixed inset-y-0 left-0 z-40 flex flex-col px-3 py-5 md:sticky md:top-0 md:h-screen">
+      <div class="mb-8 min-h-[78px] flex items-center justify-between px-1">
+        <a href="dashboard.html"
+          class="flex items-center gap-2.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span
+            class="brand-mark h-11 w-11 rounded-[16px]" aria-hidden="true"></span><span
+            class="sidebar-brand-text text-[32px] font-[500] tracking-[-0.03em]"><span
+              class="brand-life">Life</span><span class="brand-os">OS</span></span></a>
+        <button type="button" data-sidebar-collapse
+          class="hidden h-9 w-9 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep md:grid"
+          aria-label="Collapse sidebar"><i data-lucide="chevron-left" class="h-5 w-5"></i></button>
+        <button type="button"
+          class="grid h-10 w-10 place-items-center rounded-full text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep md:hidden"
+          aria-label="Close menu" data-close-mobile><i data-lucide="x" class="h-5 w-5"></i></button>
+      </div>
+      <div class="sidebar-search mb-4 flex items-center gap-2 px-2.5"><i data-lucide="search"
+          class="shrink-0"></i><input data-sidebar-search type="search" placeholder="Quick search..."
+          aria-label="Search subsystems" /></div>
+      <nav class="flex-1 space-y-1" aria-label="lifeOS navigation">
+        <a href="dashboard.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span
+            class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i
+            data-lucide="layout-dashboard" class="h-5 w-5 shrink-0"></i> Dashboard</a>
+        <a href="to-do-list.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span
+            class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i
+            data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> My To Do</a>
+        <a href="expense.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span
+            class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i
+            data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense</a>
+        <a href="sibs.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span
+            class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i
+            data-lucide="calculator" class="h-5 w-5 shrink-0"></i> SIBS Budget</a>
+        <a href="workout.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span
+            class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i
+            data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i> Workout</a>
+        <a href="workout_history.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page"><span
+            class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i
+            data-lucide="history" class="h-5 w-5 shrink-0"></i> Workout History</a>
+      </nav>
+      <div class="flex items-center gap-2 border-t border-slate-100 pt-4">
+        <button type="button" data-profile-button
+          class="profile-card flex min-w-0 flex-1 items-start gap-2.5 rounded-2xl bg-white p-2.5 text-left shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span
+            data-user-avatar
+            class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brandGreen to-brandSky text-xs font-bold text-white">DW</span><span
+            class="profile-copy min-w-0"><span data-user-display
+              class="block whitespace-normal break-words text-[13px] font-[550] leading-[1.2] text-ink">Dwight</span><span
+              class="block pt-0.5 text-[11px] font-[400] leading-none text-muted">Signed in</span></span></button>
+        <button type="button" data-logout-button
+          class="logout-button grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-muted transition hover:bg-brandSoft hover:text-brandSkyDeep focus:outline-none focus:ring-4 focus:ring-brandSky/20"
+          aria-label="Logout"><i data-lucide="log-out" class="h-5 w-5"></i></button>
+      </div>
+    </aside>
+
+    <main class="min-h-screen flex-1">
+      <header
+        class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-100 bg-white/80 px-5 backdrop-blur-xl md:hidden">
+        <button id="openMobileMenu" type="button"
+          class="grid h-11 w-11 place-items-center rounded-full text-ink transition hover:bg-brandSoft hover:text-brandSkyDeep"
+          aria-label="Open menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
+        <div class="flex items-center gap-2"><span class="brand-mark h-9 w-9 rounded-[14px]"
+            aria-hidden="true"></span><span class="text-lg font-semibold tracking-tight">lifeOS</span></div>
+        <span class="h-11 w-11"></span>
+      </header>
+
+      <section class="history-shell">
+        <div class="history-wrap">
+          <!-- Header -->
+          <div class="history-header">
+            <div>
+              <h1 class="history-title">Workout History</h1>
+              <p class="history-subtitle">Track your past workout sessions, reps performed, and weekly progression.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <a href="workout.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#086b75] text-white text-xs font-semibold hover:bg-[#06555d] transition shadow-sm">
+                <i data-lucide="dumbbell" class="h-4 w-4"></i>
+                <span>Today's Routine</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div class="controls-bar">
+            <div class="filter-chips">
+              <button type="button" class="filter-chip active" data-filter="all">All Time</button>
+              <button type="button" class="filter-chip" data-filter="this-week">This Week</button>
+              <button type="button" class="filter-chip" data-filter="this-month">This Month</button>
+              <button type="button" class="filter-chip" data-filter="completed">100% Completed</button>
+            </div>
+            <div class="search-wrap">
+              <i data-lucide="search" class="h-4 w-4 text-slate-400"></i>
+              <input id="historySearchInput" type="search" placeholder="Search exercises, days..." />
+            </div>
+          </div>
+
+          <!-- History Sessions Timeline List -->
+          <div id="historyListContainer" class="history-list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Confirm Delete History Modal -->
+  <div id="deleteModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <h3 class="text-base font-bold text-slate-900">Delete Workout Record?</h3>
+      <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">Are you sure you want to delete this recorded workout from history? This action cannot be undone.</p>
+      <div class="flex items-center justify-end gap-2.5 mt-5">
+        <button id="cancelDeleteBtn" type="button" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">Cancel</button>
+        <button id="confirmDeleteBtn" type="button" class="px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl transition">Delete Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js?v=20260902-18"></script>
+  <script src="sidebar.js?v=20260902-18"></script>
+  <script src="download-app.js?v=20260902-18"></script>
+  <script>
+    const HISTORY_KEY = "lifeOS_workout_history_v1";
+    const COMPLETION_KEY = "lifeOS_workout_completion_v1";
+    const WORKOUT_KEY = "lifeOS_workout_v1";
+
+    let activeFilter = "all";
+    let searchQuery = "";
+    let itemToDeleteDate = null;
+
+    function loadHistory() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(HISTORY_KEY));
+        return saved && typeof saved === "object" ? saved : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveHistory(data) {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(data));
+    }
+
+    function getOrdinalSetLabel(index) {
+      const n = index + 1;
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      const suffix = s[(v - 20) % 10] || s[v] || s[0];
+      return `${n}${suffix} set`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatDateFriendly(dateStr) {
+      if (!dateStr) return "";
+      try {
+        const [y, m, d] = dateStr.split("-").map(Number);
+        const dt = new Date(y, m - 1, d);
+        return dt.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" });
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function isDateInThisWeek(dateStr) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const target = new Date(y, m - 1, d);
+      const now = new Date();
+      const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+      firstDayOfWeek.setHours(0, 0, 0, 0);
+      return target >= firstDayOfWeek;
+    }
+
+    function isDateInThisMonth(dateStr) {
+      const [y, m] = dateStr.split("-").map(Number);
+      const now = new Date();
+      return y === now.getFullYear() && m === (now.getMonth() + 1);
+    }
+
+    let expandedHistoryDates = {};
+
+    function renderHistoryPage() {
+      const history = loadHistory();
+      const dates = Object.keys(history).sort((a, b) => b.localeCompare(a)); // Newest first
+
+      const sessionList = [];
+
+      dates.forEach(dateStr => {
+        const session = history[dateStr];
+        if (!session) return;
+
+        const exercises = Array.isArray(session.exercises) ? session.exercises : [];
+        let sessionSets = 0;
+        let sessionReps = 0;
+        let completedExCount = 0;
+
+        exercises.forEach(ex => {
+          const logs = ex.logs || {};
+          Object.values(logs).forEach(lg => {
+            if (lg && lg.reps) {
+              sessionReps += parseInt(lg.reps, 10) || 0;
+              sessionSets++;
+            }
+          });
+          if (ex.isDone) {
+            completedExCount++;
+          }
+        });
+
+        if (sessionSets > 0 || completedExCount > 0) {
+          sessionList.push({
+            date: dateStr,
+            dayName: session.dayName || "Workout Day",
+            focus: session.focus || "",
+            exercises: exercises,
+            totalSets: sessionSets,
+            totalReps: sessionReps,
+            completedExCount: completedExCount,
+            totalExCount: exercises.length,
+            isAllCompleted: completedExCount >= exercises.length && exercises.length > 0
+          });
+        }
+      });
+
+      // Filter Sessions
+      const filtered = sessionList.filter(item => {
+        if (activeFilter === "this-week" && !isDateInThisWeek(item.date)) return false;
+        if (activeFilter === "this-month" && !isDateInThisMonth(item.date)) return false;
+        if (activeFilter === "completed" && !item.isAllCompleted) return false;
+
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchDay = item.dayName.toLowerCase().includes(q) || item.date.includes(q);
+          const matchEx = item.exercises.some(e => e.name.toLowerCase().includes(q));
+          if (!matchDay && !matchEx) return false;
+        }
+        return true;
+      });
+
+      const container = document.getElementById("historyListContainer");
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i data-lucide="dumbbell" class="h-7 w-7"></i></div>
+            <div class="text-base font-bold text-slate-800">No Workout History Found</div>
+            <p class="text-xs text-slate-500 max-w-sm">Complete your sets in the workout routine to track your history and weekly progression here!</p>
+            <a href="workout.html" class="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#086b75] text-white text-xs font-semibold hover:bg-[#06555d] transition">
+              Start Workout Now
+            </a>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = filtered.map(session => {
+        const isCompleted = session.isAllCompleted;
+        const isOpen = expandedHistoryDates[session.date] !== false; // default open
+
+        return `
+          <article class="history-card ${isOpen ? "open" : ""}" data-history-date="${escapeHtml(session.date)}">
+            <div class="history-card-header" data-toggle-collapse="${escapeHtml(session.date)}" role="button" tabindex="0" aria-expanded="${isOpen}">
+              <div class="history-header-left">
+                <div class="history-card-title">${escapeHtml(formatDateFriendly(session.date))} · ${escapeHtml(session.dayName)}</div>
+                <div class="history-card-sub">
+                  ${session.totalSets} sets logged · ${session.totalReps} total reps · ${session.completedExCount} of ${session.totalExCount} exercises done
+                </div>
+              </div>
+              <div class="history-header-right">
+                <span class="history-status-badge ${isCompleted ? "completed" : "partial"}">
+                  <i data-lucide="${isCompleted ? "check-circle-2" : "clock"}" class="h-3.5 w-3.5"></i>
+                  <span>${isCompleted ? "100% Completed" : `${session.completedExCount}/${session.totalExCount} Completed`}</span>
+                </span>
+                <button type="button" class="history-chevron-btn" aria-label="Toggle details">
+                  <i data-lucide="chevron-down" class="history-chevron"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="history-card-collapsible">
+              <div class="history-exercises-body">
+                ${session.exercises.map(ex => {
+                  const logs = ex.logs || {};
+                  const logEntries = Object.entries(logs).filter(([, lg]) => lg && lg.reps);
+
+                  const pillsHtml = logEntries.map(([idx, lg]) => {
+                    return `
+                      <span class="history-set-pill done">
+                        <i data-lucide="check" class="h-3 w-3 stroke-[3]"></i>
+                        ${getOrdinalSetLabel(parseInt(idx, 10))}: ${escapeHtml(lg.reps)} reps ${lg.weight ? `(${escapeHtml(lg.weight)})` : ""}
+                      </span>
+                    `;
+                  }).join("");
+
+                  return `
+                    <div class="history-exercise-row">
+                      <div>
+                        <div class="history-ex-name">${escapeHtml(ex.name)}</div>
+                        <div class="history-ex-target">${escapeHtml(ex.sets || "")} · ${escapeHtml(ex.reps || "")} ${ex.weight ? `· ${escapeHtml(ex.weight)}` : ""}</div>
+                      </div>
+                      <div class="history-sets-pills">
+                        ${pillsHtml || `<span class="text-xs text-slate-400 italic">No sets logged</span>`}
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+
+              <div class="history-card-footer">
+                <button type="button" class="history-btn-delete" data-delete-date="${escapeHtml(session.date)}">
+                  <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+                  <span>Delete Entry</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      lucide.createIcons();
+    }
+
+    // Filter Chips
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        activeFilter = chip.dataset.filter;
+        renderHistoryPage();
+      });
+    });
+
+    // Search Input
+    document.getElementById("historySearchInput").addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim();
+      renderHistoryPage();
+    });
+
+    // Toggle collapse and Delete handlers
+    document.getElementById("historyListContainer").addEventListener("click", (e) => {
+      const delBtn = e.target.closest("[data-delete-date]");
+      if (delBtn) {
+        e.stopPropagation();
+        itemToDeleteDate = delBtn.dataset.deleteDate;
+        const modal = document.getElementById("deleteModal");
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        return;
+      }
+
+      const toggleHeader = e.target.closest("[data-toggle-collapse]");
+      if (toggleHeader) {
+        const d = toggleHeader.dataset.toggleCollapse;
+        expandedHistoryDates[d] = expandedHistoryDates[d] === false ? true : false;
+        renderHistoryPage();
+        return;
+      }
+    });
+
+    document.getElementById("cancelDeleteBtn").addEventListener("click", () => {
+      document.getElementById("deleteModal").classList.remove("open");
+      itemToDeleteDate = null;
+    });
+
+    document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
+      if (itemToDeleteDate) {
+        const history = loadHistory();
+        delete history[itemToDeleteDate];
+        saveHistory(history);
+        document.getElementById("deleteModal").classList.remove("open");
+        itemToDeleteDate = null;
+        renderHistoryPage();
+      }
+    });
+
+    document.getElementById("openMobileMenu").addEventListener("click", () => document.body.classList.add("mobile-open"));
+    document.querySelectorAll("[data-close-mobile]").forEach((button) => button.addEventListener("click", () => document.body.classList.remove("mobile-open")));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.body.classList.remove("mobile-open");
+        document.getElementById("deleteModal").classList.remove("open");
+      }
+    });
+
+    renderHistoryPage();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -242,6 +242,24 @@
     }
     .expense-button:hover { background: #075c65; }
     .expense-button:active { transform: translateY(1px); }
+    .expense-button.secondary {
+      background: #ffffff !important;
+      color: #086b75 !important;
+      border: 1px solid rgba(15, 23, 42, 0.12) !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+    .expense-button.secondary:hover {
+      background: #f6fbfa !important;
+      border-color: rgba(8, 107, 117, 0.28) !important;
+      color: #06545c !important;
+    }
+    .expense-button.danger {
+      background: #f04438 !important;
+      color: #ffffff !important;
+    }
+    .expense-button.danger:hover {
+      background: #d92d20 !important;
+    }
     .expense-button.compact {
       min-height: 40px;
       border-radius: 12px;
@@ -329,69 +347,87 @@
     }
     .weekly-log {
       display: grid;
-      gap: 18px;
+      gap: 12px;
       padding: 16px;
     }
-    .weekly-week {
-      display: grid;
-      gap: 14px;
-    }
-    .weekly-week-title {
-      color: #64748b;
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: -0.01em;
-      text-transform: uppercase;
-    }
-    .weekly-day {
-      display: grid;
-      gap: 8px;
-    }
-    .weekly-day-button {
+    .weekly-day-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       width: 100%;
       min-height: 52px;
-      border: 1px solid rgba(15, 23, 42, 0.07);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 14px;
+      background: #ffffff;
+      padding: 6px 12px 6px 18px;
+      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+    .weekly-day-card:hover {
+      border-color: rgba(8, 107, 117, 0.28);
+      background: #f6fbfa;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(8, 107, 117, 0.06);
+    }
+    .weekly-day-card-label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+      border: 0;
+      background: transparent;
+      color: #111827;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.018em;
+      padding: 0;
+      text-align: left;
+    }
+    .weekly-day-button {
+      display: block;
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
       border-radius: 14px;
       background: #ffffff;
       color: #111827;
       cursor: pointer;
       font-size: 15px;
-      font-weight: 650;
+      font-weight: 600;
       letter-spacing: -0.018em;
-      padding: 14px 16px;
+      padding: 14px 18px;
       text-align: left;
-      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
     }
     .weekly-day-button:hover {
-      border-color: rgba(8, 107, 117, 0.22);
+      border-color: rgba(8, 107, 117, 0.28);
       background: #f6fbfa;
       transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(8, 107, 117, 0.06);
     }
-    .weekly-day-title {
-      color: #111827;
-      font-size: 15px;
-      font-weight: 650;
-      letter-spacing: -0.024em;
+    .weekly-detail-list {
+      display: grid;
+      gap: 10px;
+      padding: 20px;
+      max-height: 60vh;
+      overflow-y: auto;
     }
-    .weekly-day-total {
-      color: #086b75;
-      font-weight: 650;
-    }
-    .weekly-row {
-      display: none;
-      grid-template-columns: 118px 116px minmax(0, 1fr);
+    .weekly-detail-row {
+      display: grid;
+      grid-template-columns: 74px 110px minmax(0, 1fr) auto;
       align-items: center;
       gap: 12px;
       min-height: 48px;
       border: 1px solid rgba(15, 23, 42, 0.06);
-      border-radius: 16px;
+      border-radius: 14px;
       background: #ffffff;
       padding: 12px 14px;
     }
     .weekly-time {
-      color: #7b8190;
-      font-size: 12px;
-      font-weight: 520;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
       white-space: nowrap;
     }
     .weekly-amount {
@@ -406,22 +442,6 @@
       font-size: 14px;
       line-height: 1.32;
       word-break: break-word;
-    }
-    .weekly-detail-list {
-      display: grid;
-      gap: 10px;
-      padding: 20px;
-    }
-    .weekly-detail-row {
-      display: grid;
-      grid-template-columns: 78px 116px minmax(0, 1fr);
-      align-items: center;
-      gap: 12px;
-      min-height: 46px;
-      border: 1px solid rgba(15, 23, 42, 0.06);
-      border-radius: 14px;
-      background: #ffffff;
-      padding: 12px;
     }
     .expense-notice {
       position: fixed;
@@ -448,54 +468,50 @@
     }
     .expense-notice-header,
     .expense-notice-actions {
-      min-height: 66px;
-      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
     .expense-notice-header {
       border-bottom: 1px solid rgba(15, 23, 42, 0.07);
-      color: #1f2937;
-      font-size: 21px;
-      font-weight: 560;
-      letter-spacing: -0.026em;
+      padding: 18px 20px;
+      font-size: 17px;
+      font-weight: 650;
+      color: #111827;
+      letter-spacing: -0.024em;
     }
     .expense-notice-close {
       display: grid;
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       place-items: center;
       border: 0;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.68);
-      color: #8a94a3;
+      background: rgba(15, 23, 42, 0.04);
+      color: #64748b;
       cursor: pointer;
     }
-    .expense-notice-close:hover {
-      background: #eef7f5;
-      color: #086b75;
-    }
+    .expense-notice-close:hover { background: rgba(15, 23, 42, 0.08); }
     .expense-notice-body {
       padding: 20px;
-      color: #667085;
-      font-size: 15px;
-      line-height: 1.6;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.45;
     }
     .expense-notice-actions {
-      justify-content: flex-end;
-      gap: 10px;
       border-top: 1px solid rgba(15, 23, 42, 0.07);
-      background: rgba(248, 251, 252, 0.84);
-      padding: 14px 20px;
+      padding: 16px 20px;
+      background: #fafcfb;
     }
     .expense-button.secondary {
-      border: 1px solid rgba(15, 23, 42, 0.08);
-      background: #ffffff;
-      color: #475569;
+      background: #e8f3f2;
+      color: #086b75;
     }
-    .expense-button.secondary:hover { background: #f8fafc; }
+    .expense-button.secondary:hover {
+      background: #dbeef1;
+      color: #06545c;
+    }
     .expense-button.danger {
       background: #f04438;
     }
@@ -578,10 +594,10 @@
       }
       .expense-date-cell {
         width: 96px;
-        font-size: 10px;
+        font-size: 11px;
       }
       .expense-date-cell strong {
-        font-size: 11px;
+        font-size: 12px;
       }
       .expense-amount-cell {
         width: 88px;
@@ -594,13 +610,8 @@
         height: 32px;
         margin-left: auto;
       }
-      .weekly-row {
-        grid-template-columns: 96px minmax(88px, auto) minmax(0, 1fr);
-        gap: 8px;
-        padding: 11px 10px;
-      }
       .weekly-detail-row {
-        grid-template-columns: 72px 94px minmax(0, 1fr);
+        grid-template-columns: 64px 88px minmax(0, 1fr) auto;
         gap: 8px;
         padding: 11px 10px;
       }
@@ -623,7 +634,8 @@
         <a href="to-do-list.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="list-checks" class="h-5 w-5 shrink-0"></i> My To Do</a>
         <a href="expense.html" class="nav-item active relative flex items-center gap-2.5 px-3 py-2.5" aria-current="page"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="wallet-cards" class="h-5 w-5 shrink-0"></i> Expense</a>
         <a href="sibs.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="calculator" class="h-5 w-5 shrink-0"></i> SIBS Budget</a>
-        <a href="workout.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i> Workout (in-progress)</a>
+        <a href="workout.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="dumbbell" class="h-5 w-5 shrink-0"></i> Workout</a>
+        <a href="workout_history.html" class="nav-item relative flex items-center gap-2.5 px-3 py-2.5"><span class="active-dot absolute left-2 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-gradient-to-b from-brandGreen to-brandSky"></span><i data-lucide="history" class="h-5 w-5 shrink-0"></i> Workout History</a>
       </nav>
       <div class="flex items-center gap-2 border-t border-slate-100 pt-4">
         <button type="button" data-profile-button class="profile-card flex min-w-0 flex-1 items-start gap-2.5 rounded-2xl bg-white p-2.5 text-left shadow-sm ring-1 ring-slate-100 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-brandSky/20"><span data-user-avatar class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brandGreen to-brandSky text-xs font-bold text-white">DW</span><span class="profile-copy min-w-0"><span data-user-display class="block whitespace-normal break-words text-[13px] font-[550] leading-[1.2] text-ink">Dwight</span><span class="block pt-0.5 text-[11px] font-[400] leading-none text-muted">Signed in</span></span></button>
@@ -643,7 +655,7 @@
               <article class="expense-card expense-total-card">
                 <div class="expense-total-copy">
                   <div id="expenseTotal" class="expense-card-value">PHP 0.00</div>
-                  <div class="expense-card-label">Total expenses</div>
+                  <div id="expenseTotalLabel" class="expense-card-label">Today's expenses</div>
                 </div>
                 <span class="expense-total-icon" aria-hidden="true"><i data-lucide="wallet"></i></span>
               </article>
@@ -696,7 +708,7 @@
         <span id="expenseDeleteTitle">Delete expense?</span>
         <button id="closeExpenseDelete" type="button" class="expense-notice-close" aria-label="Close"><i data-lucide="x"></i></button>
       </div>
-      <div id="expenseDeleteBody" class="expense-notice-body">This expense will be removed from the selected date.</div>
+      <div id="expenseDeleteBody" class="expense-notice-body">This expense will be removed.</div>
       <div class="expense-notice-actions">
         <button id="cancelExpenseDelete" type="button" class="expense-button secondary">Cancel</button>
         <button id="confirmExpenseDelete" type="button" class="expense-button danger">Delete</button>
@@ -712,18 +724,23 @@
       <div id="weeklyExpenseBody"></div>
     </div>
   </div>
-  <script src="auth.js?v=20260811-4"></script>
-  <script src="sidebar.js?v=20260811-4"></script>
-  <script src="download-app.js?v=20260811-4"></script>
+  <script src="auth.js?v=20260902-1"></script>
+  <script src="sidebar.js?v=20260902-1"></script>
+  <script src="download-app.js?v=20260902-1"></script>
   <script>
     const EXPENSE_KEY = "lifeOS_daily_expense_v1";
     const expenseState = loadExpenseState();
     let selectedExpenseDateKey = getTodayKey();
     let pendingDeleteExpenseId = null;
+    let pendingDeleteDateKey = null;
     let weeklyLogsVisible = false;
 
     function getTodayKey() {
-      return new Date().toLocaleDateString("en-CA");
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
     }
 
     function cryptoId() {
@@ -744,7 +761,7 @@
       localStorage.setItem(EXPENSE_KEY, JSON.stringify(expenseState));
     }
 
-    function ensureExpensesForDate(dateKey = selectedExpenseDateKey) {
+    function ensureExpensesForDate(dateKey = getTodayKey()) {
       if (!Array.isArray(expenseState[dateKey])) expenseState[dateKey] = [];
       return expenseState[dateKey];
     }
@@ -760,29 +777,18 @@
 
     function parseDateKey(dateKey) {
       const [year, month, day] = dateKey.split("-").map(Number);
-      return new Date(year, month - 1, day);
+      return new Date(year, (month || 1) - 1, day || 1);
     }
 
-    function formatShortDate(date) {
-      return new Intl.DateTimeFormat(undefined, {
-        month: "short",
+    function formatFullDate(dateKey) {
+      if (!dateKey) return "Unknown date";
+      const date = parseDateKey(dateKey);
+      if (Number.isNaN(date.getTime())) return dateKey;
+      return new Intl.DateTimeFormat("en-US", {
+        month: "long",
         day: "numeric",
         year: "numeric"
       }).format(date);
-    }
-
-    function formatWeekDate(date) {
-      return new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric"
-      }).format(date);
-    }
-
-    function formatLogDate(dateKey) {
-      return new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric"
-      }).format(parseDateKey(dateKey));
     }
 
     function formatNumericDate(dateKey) {
@@ -791,27 +797,14 @@
     }
 
     function formatExpenseTime(expense) {
-      const date = expense.createdAt ? new Date(expense.createdAt) : parseDateKey(expense.dateKey || selectedExpenseDateKey);
-      if (Number.isNaN(date.getTime())) return "--";
+      if (!expense.createdAt) return "--:--";
+      const date = new Date(expense.createdAt);
+      if (Number.isNaN(date.getTime())) return "--:--";
       return new Intl.DateTimeFormat(undefined, {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false
       }).format(date);
-    }
-
-    function startOfCalendarWeek(date) {
-      const weekStart = new Date(date);
-      weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-      weekStart.setHours(0, 0, 0, 0);
-      return weekStart;
-    }
-
-    function endOfCalendarWeek(date) {
-      const weekEnd = startOfCalendarWeek(date);
-      weekEnd.setDate(weekEnd.getDate() + 6);
-      weekEnd.setHours(23, 59, 59, 999);
-      return weekEnd;
     }
 
     function formatMoney(amount) {
@@ -823,8 +816,30 @@
 
     function formatPlainMoney(amount) {
       return new Intl.NumberFormat(undefined, {
+        minimumFractionDigits: 0,
         maximumFractionDigits: 2
       }).format(amount);
+    }
+
+    function updateTabButtonStates() {
+      const addExpenseBtn = document.getElementById("openExpenseModal");
+      const weeklyLogsBtn = document.getElementById("toggleWeeklyLogs");
+      if (weeklyLogsVisible) {
+        addExpenseBtn.classList.add("secondary");
+        weeklyLogsBtn.classList.remove("secondary");
+      } else {
+        addExpenseBtn.classList.remove("secondary");
+        weeklyLogsBtn.classList.add("secondary");
+      }
+    }
+
+    function handleAddExpenseClick() {
+      if (weeklyLogsVisible) {
+        weeklyLogsVisible = false;
+        renderExpensePage();
+        return;
+      }
+      openExpenseModal();
     }
 
     function openExpenseModal() {
@@ -868,18 +883,37 @@
       document.getElementById("expenseStatusModal").setAttribute("aria-hidden", "true");
     }
 
-    function openExpenseDeleteConfirm(id) {
-      const expense = ensureExpensesForDate().find((item) => item.id === id);
+    let pendingDeleteType = "expense";
+
+    function openExpenseDeleteConfirm(id, dateKey = getTodayKey()) {
+      pendingDeleteType = "expense";
+      const expenses = Array.isArray(expenseState[dateKey]) ? expenseState[dateKey] : [];
+      const expense = expenses.find((item) => item.id === id);
       pendingDeleteExpenseId = id;
+      pendingDeleteDateKey = dateKey;
+      document.getElementById("expenseDeleteTitle").textContent = "Delete expense?";
       document.getElementById("expenseDeleteBody").textContent = expense
         ? `Delete ${formatMoney(Number(expense.amount || 0))} for "${expense.description}"?`
-        : "This expense will be removed from the selected date.";
+        : "This expense will be removed.";
+      document.getElementById("expenseDeleteModal").classList.add("open");
+      document.getElementById("expenseDeleteModal").setAttribute("aria-hidden", "false");
+    }
+
+    function openDayDeleteConfirm(dateKey) {
+      pendingDeleteType = "day";
+      const entries = Array.isArray(expenseState[dateKey]) ? expenseState[dateKey] : [];
+      const total = entries.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      pendingDeleteExpenseId = null;
+      pendingDeleteDateKey = dateKey;
+      document.getElementById("expenseDeleteTitle").textContent = "Delete day log?";
+      document.getElementById("expenseDeleteBody").textContent = `Delete all expenses for ${formatFullDate(dateKey)} (${formatMoney(total)})?`;
       document.getElementById("expenseDeleteModal").classList.add("open");
       document.getElementById("expenseDeleteModal").setAttribute("aria-hidden", "false");
     }
 
     function closeExpenseDeleteConfirm() {
       pendingDeleteExpenseId = null;
+      pendingDeleteDateKey = null;
       document.getElementById("expenseDeleteModal").classList.remove("open");
       document.getElementById("expenseDeleteModal").setAttribute("aria-hidden", "true");
     }
@@ -895,19 +929,23 @@
           return bTime - aTime;
         });
 
-      document.getElementById("weeklyExpenseTitle").textContent = `${formatNumericDate(dateKey)} expenses = ${formatPlainMoney(total)}`;
+      document.getElementById("weeklyExpenseTitle").textContent = `${formatFullDate(dateKey)} = ${formatPlainMoney(total)} expenses`;
       document.getElementById("weeklyExpenseBody").innerHTML = sortedEntries.length
         ? `<div class="weekly-detail-list">${sortedEntries.map((expense) => `
             <article class="weekly-detail-row">
               <span class="weekly-time">${escapeHtml(formatExpenseTime(expense))}</span>
               <span class="weekly-amount">${escapeHtml(formatMoney(Number(expense.amount || 0)))}</span>
               <span class="weekly-description">${escapeHtml(expense.description)}</span>
+              <button type="button" class="expense-delete" data-delete-expense="${expense.id}" data-delete-date="${escapeHtml(dateKey)}" aria-label="Delete expense">
+                <i data-lucide="trash-2"></i>
+              </button>
             </article>
           `).join("")}</div>`
         : `<div class="expense-empty">No expenses recorded for this date.</div>`;
 
       document.getElementById("weeklyExpenseModal").classList.add("open");
       document.getElementById("weeklyExpenseModal").setAttribute("aria-hidden", "false");
+      lucide.createIcons();
     }
 
     function closeWeeklyExpenseModal() {
@@ -915,15 +953,21 @@
       document.getElementById("weeklyExpenseModal").setAttribute("aria-hidden", "true");
     }
 
-    function getSelectedDayExpensesTotal() {
-      return ensureExpensesForDate().reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+    function getTodayExpensesTotal() {
+      const todayKey = getTodayKey();
+      const todayExpenses = Array.isArray(expenseState[todayKey]) ? expenseState[todayKey] : [];
+      return todayExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
     }
 
     function renderExpensePage() {
-      const expenses = ensureExpensesForDate();
+      const todayKey = getTodayKey();
+      const expenses = ensureExpensesForDate(todayKey);
       const tableArea = document.getElementById("expenseTableArea");
 
-      document.getElementById("expenseTotal").textContent = formatMoney(getSelectedDayExpensesTotal());
+      document.getElementById("expenseTotal").textContent = formatMoney(getTodayExpensesTotal());
+      document.getElementById("expenseTotalLabel").textContent = "Today's expenses";
+
+      updateTabButtonStates();
 
       if (weeklyLogsVisible) {
         renderWeeklyLogs();
@@ -932,7 +976,7 @@
       }
 
       if (!expenses.length) {
-        tableArea.innerHTML = `<div class="expense-empty">No expenses recorded for this date.</div>`;
+        tableArea.innerHTML = `<div class="expense-empty">No expenses added for today yet.<br><span class="text-xs text-slate-400 mt-1 block">Click <strong>Add expense</strong> above to record an expense for today.</span></div>`;
         lucide.createIcons();
         return;
       }
@@ -948,13 +992,13 @@
             </tr>
           </thead>
           <tbody>
-            ${expenses.map((expense) => `
+            ${expenses.slice().reverse().map((expense) => `
               <tr>
-                <td class="expense-date-cell">${escapeHtml(formatExpenseTime({ ...expense, dateKey: selectedExpenseDateKey }))}</td>
+                <td class="expense-date-cell"><strong>${escapeHtml(formatExpenseTime(expense))}</strong></td>
                 <td class="expense-amount-cell">${escapeHtml(formatMoney(Number(expense.amount || 0)))}</td>
                 <td class="expense-description-cell">${escapeHtml(expense.description)}</td>
                 <td class="expense-action-cell">
-                  <button type="button" class="expense-delete" data-delete-expense="${expense.id}" aria-label="Delete expense">
+                  <button type="button" class="expense-delete" data-delete-expense="${expense.id}" data-delete-date="${escapeHtml(todayKey)}" aria-label="Delete expense">
                     <i data-lucide="trash-2"></i>
                   </button>
                 </td>
@@ -968,67 +1012,44 @@
 
     function getExpenseDateKeys() {
       return Object.keys(expenseState)
-        .filter((dateKey) => /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && Array.isArray(expenseState[dateKey]))
+        .filter((dateKey) => /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && Array.isArray(expenseState[dateKey]) && expenseState[dateKey].length > 0)
         .sort((a, b) => b.localeCompare(a));
     }
 
     function renderWeeklyLogs() {
-      const weeklyLogArea = document.getElementById("expenseTableArea");
-      const weeks = new Map();
+      const logArea = document.getElementById("expenseTableArea");
+      const dateKeys = getExpenseDateKeys();
 
-      getExpenseDateKeys()
-        .forEach((dateKey) => {
-          const date = parseDateKey(dateKey);
-          const weekStart = startOfCalendarWeek(date);
-          const weekEnd = endOfCalendarWeek(date);
-          const weekKey = weekStart.toLocaleDateString("en-CA");
-          const entries = expenseState[dateKey]
-            .map((expense) => ({ ...expense, dateKey }))
-            .sort((a, b) => {
-              const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-              const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-              return bTime - aTime;
-            });
-
-          if (!entries.length) return;
-
-          if (!weeks.has(weekKey)) {
-            weeks.set(weekKey, {
-              start: weekStart,
-              end: weekEnd,
-              days: []
-            });
-          }
-
-          weeks.get(weekKey).days.push({
-            dateKey,
-            entries,
-            total: entries.reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
-          });
-        });
-
-      const completedWeeks = Array.from(weeks.values())
-        .map((week) => ({
-          ...week,
-          days: week.days.sort((a, b) => b.dateKey.localeCompare(a.dateKey))
-        }))
-        .sort((a, b) => b.start - a.start);
-
-      if (!completedWeeks.length) {
-        weeklyLogArea.innerHTML = `<div class="expense-empty">No weekly expense logs yet.</div>`;
+      if (!dateKeys.length) {
+        logArea.innerHTML = `<div class="expense-empty">No weekly expense logs yet.</div>`;
         return;
       }
 
-      weeklyLogArea.innerHTML = `<div class="weekly-log">${completedWeeks.map((week) => `
-        <section class="weekly-week">
-          <div class="weekly-week-title">${escapeHtml(formatWeekDate(week.start))} - ${escapeHtml(formatWeekDate(week.end))}</div>
-          ${week.days.map((day) => `
-            <section class="weekly-day">
-              <button type="button" class="weekly-day-button" data-weekly-expense-date="${escapeHtml(day.dateKey)}">${escapeHtml(formatNumericDate(day.dateKey))} expenses = ${escapeHtml(formatPlainMoney(day.total))}</button>
-            </section>
+      const days = dateKeys.map((dateKey) => {
+        const entries = expenseState[dateKey] || [];
+        const total = entries.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        return {
+          dateKey,
+          total,
+          count: entries.length
+        };
+      });
+
+      logArea.innerHTML = `
+        <div class="weekly-log">
+          ${days.map((day) => `
+            <div class="weekly-day-card">
+              <button type="button" class="weekly-day-card-label" data-weekly-expense-date="${escapeHtml(day.dateKey)}">
+                <span>${escapeHtml(formatFullDate(day.dateKey))} = ${escapeHtml(formatPlainMoney(day.total))} expenses</span>
+              </button>
+              <button type="button" class="expense-delete" data-delete-day="${escapeHtml(day.dateKey)}" aria-label="Delete ${escapeHtml(formatFullDate(day.dateKey))} log">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
           `).join("")}
-        </section>
-      `).join("")}</div>`;
+        </div>
+      `;
+      lucide.createIcons();
     }
 
     document.getElementById("expenseForm").addEventListener("submit", (event) => {
@@ -1048,62 +1069,94 @@
       }
 
       closeExpenseModal();
-      showExpenseStatus("loading", "Saving expense", "Please wait while LifeOS adds this to the selected date.");
+      showExpenseStatus("loading", "Saving expense", "Please wait while LifeOS adds this to today's expenses.");
 
       window.setTimeout(() => {
-        ensureExpensesForDate().push({ id: cryptoId(), amount, description, createdAt: new Date().toISOString() });
+        const todayKey = getTodayKey();
+        ensureExpensesForDate(todayKey).push({
+          id: cryptoId(),
+          amount,
+          description,
+          createdAt: new Date().toISOString()
+        });
         clearExpenseForm();
         saveExpenseState();
         renderExpensePage();
-        showExpenseStatus("success", "Expense added", "Your expense was saved locally and added to the selected date.");
+        showExpenseStatus("success", "Expense added", "Your expense was saved locally and added to today.");
 
-        window.setTimeout(closeExpenseStatus, 1100);
-      }, 650);
+        window.setTimeout(closeExpenseStatus, 1000);
+      }, 550);
     });
 
     document.getElementById("expenseTableArea").addEventListener("click", (event) => {
+      const deleteDayBtn = event.target.closest("[data-delete-day]");
+      if (deleteDayBtn) {
+        openDayDeleteConfirm(deleteDayBtn.dataset.deleteDay);
+        return;
+      }
+
       const weeklyButton = event.target.closest("[data-weekly-expense-date]");
       if (weeklyButton) {
-        openWeeklyExpenseModal(weeklyButton.dataset.weeklyExpenseDate);
+        const dateKey = weeklyButton.dataset.weeklyExpenseDate;
+        openWeeklyExpenseModal(dateKey);
         return;
       }
 
       const deleteButton = event.target.closest("[data-delete-expense]");
       if (!deleteButton) return;
 
-      openExpenseDeleteConfirm(deleteButton.dataset.deleteExpense);
+      const dateKey = deleteButton.dataset.deleteDate || getTodayKey();
+      openExpenseDeleteConfirm(deleteButton.dataset.deleteExpense, dateKey);
+    });
+
+    document.getElementById("weeklyExpenseBody").addEventListener("click", (event) => {
+      const deleteButton = event.target.closest("[data-delete-expense]");
+      if (!deleteButton) return;
+
+      const dateKey = deleteButton.dataset.deleteDate || getTodayKey();
+      openExpenseDeleteConfirm(deleteButton.dataset.deleteExpense, dateKey);
     });
 
     document.getElementById("confirmExpenseDelete").addEventListener("click", () => {
-      if (!pendingDeleteExpenseId) return;
-
+      const targetDateKey = pendingDeleteDateKey || getTodayKey();
       const deleteId = pendingDeleteExpenseId;
+      const isDayDelete = pendingDeleteType === "day";
+
       closeExpenseDeleteConfirm();
-      showExpenseStatus("loading", "Deleting expense", "Please wait while LifeOS removes this expense.");
+      showExpenseStatus("loading", isDayDelete ? "Deleting log" : "Deleting expense", isDayDelete ? "Please wait while LifeOS removes this day log." : "Please wait while LifeOS removes this expense.");
 
       window.setTimeout(() => {
-        const selectedExpenses = ensureExpensesForDate();
-        const nextExpenses = selectedExpenses.filter((expense) => expense.id !== deleteId);
-        expenseState[selectedExpenseDateKey] = nextExpenses;
+        if (isDayDelete) {
+          delete expenseState[targetDateKey];
+        } else if (deleteId && Array.isArray(expenseState[targetDateKey])) {
+          expenseState[targetDateKey] = expenseState[targetDateKey].filter((expense) => expense.id !== deleteId);
+          if (expenseState[targetDateKey].length === 0 && targetDateKey !== getTodayKey()) {
+            delete expenseState[targetDateKey];
+          }
+        }
+
         saveExpenseState();
         renderExpensePage();
-        showExpenseStatus("success", "Expense deleted", "The expense was removed successfully.");
 
-        window.setTimeout(closeExpenseStatus, 1100);
-      }, 650);
+        if (document.getElementById("weeklyExpenseModal").classList.contains("open")) {
+          if (expenseState[targetDateKey] && expenseState[targetDateKey].length > 0) {
+            openWeeklyExpenseModal(targetDateKey);
+          } else {
+            closeWeeklyExpenseModal();
+          }
+        }
+
+        showExpenseStatus("success", isDayDelete ? "Log deleted" : "Expense deleted", isDayDelete ? "The daily log was removed successfully." : "The expense was removed successfully.");
+        window.setTimeout(closeExpenseStatus, 900);
+      }, 550);
     });
 
     document.getElementById("toggleWeeklyLogs").addEventListener("click", () => {
       weeklyLogsVisible = !weeklyLogsVisible;
-      const toggleButton = document.getElementById("toggleWeeklyLogs");
-      toggleButton.classList.toggle("secondary", !weeklyLogsVisible);
-      toggleButton.innerHTML = weeklyLogsVisible
-        ? '<i data-lucide="arrow-left" class="h-4 w-4"></i>Back to daily logs'
-        : '<i data-lucide="calendar-range" class="h-4 w-4"></i>Weekly logs';
-      document.getElementById("openExpenseModal").classList.toggle("hidden", weeklyLogsVisible);
       renderExpensePage();
     });
-    document.getElementById("openExpenseModal").addEventListener("click", openExpenseModal);
+
+    document.getElementById("openExpenseModal").addEventListener("click", handleAddExpenseClick);
     document.getElementById("closeExpenseModal").addEventListener("click", closeExpenseModal);
     document.getElementById("cancelExpenseModal").addEventListener("click", closeExpenseModal);
     document.getElementById("closeExpenseDelete").addEventListener("click", closeExpenseDeleteConfirm);
